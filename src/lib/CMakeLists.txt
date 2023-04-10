@@ -46,7 +46,6 @@ add_library(nimble_serialize
 target_include_directories(nimble_serialize PUBLIC ${deps}piot/clog/src/include)
 target_include_directories(nimble_serialize PUBLIC ${deps}piot/tiny-libc/src/include)
 target_include_directories(nimble_serialize PUBLIC ${deps}piot/flood-c/src/include)
-target_include_directories(nimble_serialize PUBLIC ${deps}piot/bit-array/src/include)
 target_include_directories(nimble_serialize PUBLIC ${deps}piot/monotonic-time-c/src/include)
 target_include_directories(nimble_serialize PUBLIC ../include)
 
