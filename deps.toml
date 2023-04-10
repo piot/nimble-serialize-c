@@ -2,7 +2,3 @@ depsversion = "0.0.0"
 
 name = "piot/nimble-serialize-c"
 version = "0.0.0"
-
-[[dependencies]]
-name = 'piot/blob-stream'
-version = "*"
