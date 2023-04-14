@@ -22,13 +22,16 @@ const char* nimbleSerializeCmdToString(uint8_t t)
             return "DownloadStateRequest";
         case NimbleSerializeCmdDownloadGameStateStatus:
             return "DownloadStateStatus";
+        case NimbleSerializeCmdJoinGameRequest:
+            return "JoinGameRequest";
+        case NimbleSerializeCmdJoinGameResponse:
+            return "JoinGameResponse";
+        case NimbleSerializeCmdGameStatePart:
+            return "DownloadGameStatePart";
         default:
         {
-            static char buf[128];
-            tc_snprintf(buf, 128, "no idea %02X", t);
-            return buf;
+            CLOG_ERROR("Unknown serialize command: %02X", t)
         }
-
     }
 }
 

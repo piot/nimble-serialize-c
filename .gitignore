@@ -13,3 +13,7 @@ deps*/
 .DS_Store
 build/
 .vscode/
+.cmake/
+*.a
+.ninja_*
+*.ninja

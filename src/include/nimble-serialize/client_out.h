@@ -9,9 +9,20 @@
 #include <stdint.h>
 #include <stdlib.h>
 #include <nimble-serialize/types.h>
+#include <nimble-serialize/version.h>
 
 struct FldOutStream;
 
-int nimbleSerializeClientOutGameJoin(struct FldOutStream* stream);
+typedef struct NimbleSerializePlayerJoinOptions {
+    uint8_t localIndex;
+} NimbleSerializePlayerJoinOptions;
+
+typedef struct NimbleSerializeGameJoinOptions {
+    NimbleSerializeVersion applicationVersion;
+    NimbleSerializePlayerJoinOptions players[8];
+    size_t playerCount;
+} NimbleSerializeGameJoinOptions;
+
+int nimbleSerializeClientOutGameJoin(struct FldOutStream* stream, const NimbleSerializeGameJoinOptions* options);
 
 #endif
