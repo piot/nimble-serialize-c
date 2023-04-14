@@ -13,7 +13,8 @@
 struct FldOutStream;
 struct FldInStream;
 
-int nimbleSerializeOutBlobStreamChannelId(struct FldOutStream* stream, const NimbleSerializeBlobStreamChannelId channelId);
+int nimbleSerializeOutBlobStreamChannelId(struct FldOutStream* stream,
+                                          const NimbleSerializeBlobStreamChannelId channelId);
 int nimbleSerializeInBlobStreamChannelId(struct FldInStream* stream, NimbleSerializeBlobStreamChannelId* channelId);
 
 int nimbleSerializeOutStateId(struct FldOutStream* stream, const NimbleSerializeStateId stateId);

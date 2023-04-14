@@ -7,8 +7,9 @@
 
 #include <stdint.h>
 
-// Requests from Client to Server
 #define NimbleSerializeCmdNop (0x00)
+
+// Requests from Client to Server
 #define NimbleSerializeCmdJoinGameRequest (0x04)
 #define NimbleSerializeCmdGameStep (0x05)
 #define NimbleSerializeCmdDownloadGameStateRequest (0x06)

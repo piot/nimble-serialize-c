@@ -6,7 +6,6 @@
 #include <flood/out_stream.h>
 #include <nimble-serialize/version.h>
 
-
 /// Write a version to an FldOutStream.
 /// @param outStream
 /// @param version
