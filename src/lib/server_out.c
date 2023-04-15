@@ -34,6 +34,11 @@ static int writeConnectionIndexAndParticipantIds(FldOutStream* outStream, uint8_
     if (errorCode < 0) {
         return errorCode;
     }
+    if (participantCount == 0) {
+        CLOG_ERROR("participant count zero is not allowed")
+        return -44;
+    }
+
     fldOutStreamWriteUInt8(outStream, participantCount);
 
     for (size_t i = 0; i < participantCount; ++i) {
@@ -47,6 +52,8 @@ static int writeConnectionIndexAndParticipantIds(FldOutStream* outStream, uint8_
 
     return 0;
 }
+
+
 
 /// Serialize a game join response for a previously received game join request.
 /// @param outStream

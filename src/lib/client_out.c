@@ -5,11 +5,16 @@
 #include <nimble-serialize/client_out.h>
 #include <flood/out_stream.h>
 #include <nimble-serialize/serialize.h>
+#include <clog/clog.h>
 
 static int nimbleSerializeClientOutParticipantConnectionJoin(FldOutStream* stream,
                                                              const struct NimbleSerializePlayerJoinOptions* joinInfos,
                                                              size_t localParticipantCount)
 {
+    if (localParticipantCount == 0) {
+        CLOG_ERROR("participant count must be greater than zero")
+    }
+    CLOG_VERBOSE("joining participant count %zu", localParticipantCount)
     fldOutStreamWriteUInt8(stream, localParticipantCount);
     for (size_t i = 0; i < localParticipantCount; ++i) {
         fldOutStreamWriteUInt8(stream, joinInfos[i].localIndex);
