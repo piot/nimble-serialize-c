@@ -1,0 +1,374 @@
+Nimble Protocol
+
+Copyright (C) 2022 Peter Bjorklund. All rights reserved.
+
+== Nimble Protocol
+
+
+=== Join Game Request
+
+[cols="1,1,2"]
+|===
+|Type | Name | Description
+
+|U8
+|Command
+|`NimbleSerializeCmdJoinGameRequest` (0x01)
+
+|<<Version>>
+|Nimble Protocol Version
+|The protocol version described in this document. Currently `0.0.1`.
+
+|<<Version>>
+|Application Version
+|Since it is vital that the application is deterministic, you need to have an exact version of the application.
+
+|U8
+|Participant Count
+|The number of participants that follows in the stream.
+
+|U8 * Participant Count
+|Local Player Identifier
+|The local player identifier for the participant on the client. The client can select any unique identifier between 1-255. 0 is reserved.
+
+|===
+
+=== Join Game Response
+
+Implemented in `nimbleSerializeServerOutGameJoinResponse()`.
+
+[cols="1,1,2"]
+|===
+|Type | Name | Description
+
+|U8
+|Command
+|`NimbleSerializeCmdJoinGameResponse` (0x09)
+
+|U8
+|Participant Connection Id
+|Game session unique identifier for the participant connection created when a join game request was approved.
+
+|U8
+|Participant Count
+|The number of participant infos that follows the stream
+
+|<<Participant Join Result>> * Participant Count
+|Join Infos
+|Assigned participant Ids for each participant in the participant connection. Client should mark Steps with the unique participant ids.
+
+|===
+
+=== Download Game State Request
+
+Sent from a client to a server to request the most recent game state that the server has knowledge of.
+Usually the complete state is only set each X tick (X is usually around 30-60 ticks).
+
+[cols="1,1,2"]
+|===
+|Type | Name | Description
+
+|U8
+|Command
+|`NimbleSerializeCmdDownloadGameStateRequest` (0x03)
+
+|===
+
+
+
+=== Download Game State Response
+
+implemented in `nimbleSerializeServerOutGameStateResponse()`.
+
+[cols="1,1,2"]
+|===
+|Type | Name | Description
+
+|U8
+|Command
+|`NimbleSerializeCmdGameStateResponse` (0x0B)
+
+|_U8_
+|_DEBUG ONLY: StepIdDebugMarker_
+|0x9a
+
+|StepId (U32)
+|StepId
+|The StepId/TickId when the game state was captured, before input and update was applied to the state.
+
+|U32
+|State Octet Size
+|The number of octets in the total state.
+
+|_U8_
+|_DEBUG ONLY: Blob Stream Channel ID debug marker_
+|0x19
+
+|U32
+|Blob Stream Channel ID
+|The game state will be transferred over this blob stream channel.
+
+|===
+
+
+
+=== Game State Chunk
+
+Sent from the server to the client. A blob stream chunk is usually 1024 octets.
+
+[cols="1,1,2"]
+|===
+|Type | Name | Description
+
+|U8
+|Command
+|`NimbleSerializeCmdGameStatePart` (0x0A)
+
+|_U8_
+|_DEBUG ONLY: Blob Stream Channel ID debug marker_
+|0x19
+
+|U32
+|Blob Stream Channel ID
+|The blob stream channel Id that the client is receiving the state on.
+
+|BlobStreamOutEntrySend
+|Blob Stream Out Entry format
+a|See BlobStream documentation for specifics. But essentially it is:
+
+* U8 Blob Stream Command (0x01)
+* U32 ChunkID that follows
+* U16 Chunk Octet Size. Usually 1024 octets for all chunks except maybe the last one.
+* `U8 * Chunk Octet Size`. the Blob Stream Chunk.
+
+|===
+
+
+
+=== Game State Chunk Ack
+
+Sent from the client to the server to acknowledge which chunks that have been received.
+
+[cols="1,1,2"]
+|===
+|Type | Name | Description
+
+|U8
+|Command
+|`NimbleSerializeCmdDownloadGameStateStatus` (0x04)
+
+|_U8_
+|_DEBUG ONLY: Blob Stream Channel ID debug marker_
+|0x19
+
+|U32
+|Blob Stream Channel ID
+|The blob stream channel Id that the client is receiving the state on.
+
+|BlobStreamInLogicSend
+|Blob Stream In Logic format
+a|See BlobStream documentation for specifics. But essentially it is:
+
+* U8 Blob Stream Command (0x02)
+* U32 ChunkID that the client is waiting for
+* U32 Receive Mask with bits set for each chunk that the client has received.
+
+
+|===
+
+
+
+
+=== Game Step Request
+
+Sent from the client to the server to acknowledge which chunks that have been received.
+
+Implemented by `nimbleClientSendStepsToServer()`
+
+[cols="1,1,2"]
+|===
+|Type | Name | Description
+
+|U8
+|Command
+|`NimbleSerializeCmdGameStep` (0x02)
+
+|_U8_
+|_DEBUG ONLY: Blob Stream Channel ID debug marker_
+|0x19
+
+|U32
+|Latest authoritative StepId
+|The StepID received from server without any gaps or missing steps.
+
+|U64
+|StepId Receive Mask
+|Bit mask with bit set for each stepIds completely received after `Latest authoritative StepId`
+
+|U32
+|Start StepId
+|The first stepId in the stream that follows.
+
+|U8
+|Step Count
+|The number of steps that follows in the stream.
+
+|<<Step Header>> * Step Count
+|Predicted steps
+|The predicted combined steps for all the local players on the client.
+
+|===
+
+
+
+
+
+=== Game Step Response
+
+Sent from the server to the client with authoritative steps.
+
+Implemented by `nimbleSerializeServerOutStepHeader()`
+
+[cols="1,1,2"]
+|===
+|Type | Name | Description
+
+|U8
+|Command
+|`NimbleSerializeCmdGameStepResponse` (0x08)
+
+|U8
+|Connection specific buffer count
+|The number of steps contained at the connection specific incoming predicted steps.
+
+|S8
+|Authoritative StepId delta
+|The difference between the last predicted stepId received and the current authoritative stepId. Negative values means that the client is behind the server and should increase the rate of predicting steps. A positive value means that the predicted steps are ahead of the assembly of authoritative steps. The higher the number, the higher the perceived latency for the inputs.
+
+|U32
+|Last Received StepId
+|The last received stepId from the client.
+
+|U32
+|First StepId in range
+|The first stepId in the range of steps that the client is probably missing (determined from <<Game Step Request>>).
+
+|U8
+|Range Count
+|The number of ranges following.
+
+|Authoritative Step Range * Range Count
+|Authoritative Step Ranges
+|The authoritative step ranges that the client is probably missing.
+
+|===
+
+
+
+
+
+== Types
+
+=== Authoritative Step Range
+
+[cols="1,1,2"]
+|===
+|Type | Name | Description
+
+|U8
+|Delta StepId
+|The difference between the last stepId in the previous range. Or the `First StepId in range` if this is the first range.
+
+|U8
+|Step Count
+|The number of steps following in this range. Each step has 1 step higher stepId than the previous step.
+
+|<<Step Header>>
+|Authoritative Steps
+|The authoritative steps for all the participants in the game for this step range.
+
+|===
+
+=== Participant Join Result
+
+[cols="1,1,2"]
+|===
+|Type | Name | Description
+
+|U8
+|Local Player Identifier
+|Game session unique identifier for the local player on the client.
+
+|U8
+|Participant Id
+|Game session assigned unique participant identifier for the local player on the client.
+
+|===
+
+
+=== Step Header
+
+Used both for predicted and authoritative steps.
+
+[cols="1,1,2"]
+|===
+|Type | Name | Description
+
+|U8
+|Step Octet Count
+|The number of octets following in the stream (includes Participant Count and Steps for each Participant).
+
+|U8
+|Participant Count
+|Steps follows for that number of participants
+
+|U8
+|<<Step for Participant>>
+|Steps follows for that number of participants
+
+|===
+
+=== Step for Participant
+
+[cols="1,1,2"]
+|===
+|Type | Name | Description
+
+|U8
+|Participant ID
+|Step for the indicated participant ID.
+
+|U8
+|Step octet size
+|number of octets that follows.
+
+|`U8 * Step octet size`
+|Step payload
+|Application specific step payload. It is recommended that first octet in the payload can be a zero to indicate that the step is "unknown", no input is pressed.
+
+
+|===
+
+=== Version
+
+The semantic version. Used for the Nimble Protocol and the Application.
+
+[cols="1,1,2"]
+|===
+|Type | Name | Description
+
+|U8
+|Major
+|
+
+
+|U8
+|Minor
+|
+
+
+|U8
+|Patch
+|
+
+|===
