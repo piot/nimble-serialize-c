@@ -255,7 +255,7 @@ Implemented by `https://github.com/piot/nimble-steps-serialize-c/blob/main/src/l
 |Start StepId
 |The first stepId in the stream that follows.
 
-|<<Multiple Steps For Participants>> * Step Count
+|<<Multiple Steps For Participants>>
 |Predicted steps
 |The predicted combined steps for all the local players on the client.
 
