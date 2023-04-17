@@ -7,6 +7,10 @@ Copyright (C) 2022 Peter Bjorklund. All rights reserved.
 
 === Join Game Request
 
+Sent by the client to the server, asking for the included local players to become participants in the game session.
+
+Implemented by https://github.com/piot/nimble-serialize-c/blob/main/src/lib/client_out.c#L27[`nimbleSerializeClientOutGameJoin()`].
+
 [cols="1,1,2"]
 |===
 |Type | Name | Description
@@ -21,7 +25,7 @@ Copyright (C) 2022 Peter Bjorklund. All rights reserved.
 
 |<<Version>>
 |Application Version
-|Since it is vital that the application is deterministic, you need to have an exact version of the application.
+|Since it is vital that the application is deterministic, you need to verify that everyone is using the exact same version of the application.
 
 |U8
 |Participant Count
@@ -33,9 +37,39 @@ Copyright (C) 2022 Peter Bjorklund. All rights reserved.
 
 |===
 
+==== Version
+
+The semantic version. Used for the Nimble Protocol and Application version.
+
+[cols="1,1,2"]
+|===
+|Type | Name | Description
+
+|U16
+|Major
+|
+
+
+|U16
+|Minor
+|
+
+
+|U16
+|Patch
+|
+
+|===
+
+
+
+
+
 === Join Game Response
 
-Implemented in `nimbleSerializeServerOutGameJoinResponse()`.
+Sent by the server to the client, approving or denying the join game request. If participant count is 0, the request was denied.
+
+Implemented in https://github.com/piot/nimble-serialize-c/blob/main/src/lib/server_out.c#L64[`nimbleSerializeServerOutGameJoinResponse()`].
 
 [cols="1,1,2"]
 |===
@@ -51,7 +85,7 @@ Implemented in `nimbleSerializeServerOutGameJoinResponse()`.
 
 |U8
 |Participant Count
-|The number of participant infos that follows the stream
+|The number of participant infos that follows the stream. If zero, the join request was denied.
 
 |<<Participant Join Result>> * Participant Count
 |Join Infos
@@ -59,10 +93,33 @@ Implemented in `nimbleSerializeServerOutGameJoinResponse()`.
 
 |===
 
+==== Participant Join Result
+
+Information about the local player identifier and their assigned participant id.
+
+[cols="1,1,2"]
+|===
+|Type | Name | Description
+
+|U8
+|Local Player Identifier
+|Game session unique identifier for the local player on the client.
+
+|U8
+|Participant Id
+|Game session assigned unique participant identifier for the local player on the client.
+
+|===
+
+
+
+
+
+
 === Download Game State Request
 
-Sent from a client to a server to request the most recent game state that the server has knowledge of.
-Usually the complete state is only set each X tick (X is usually around 30-60 ticks).
+Sent from a client to a server to request the most recent game state that the server has knowledge of. The client usually only request it once, after receiving a successful Join Game Response.
+Usually the complete state is only set on the server each X tick (X is usually around 30-60 ticks).
 
 [cols="1,1,2"]
 |===
@@ -76,9 +133,14 @@ Usually the complete state is only set each X tick (X is usually around 30-60 ti
 
 
 
+
+
+
 === Download Game State Response
 
-implemented in `nimbleSerializeServerOutGameStateResponse()`.
+Sent from the server to the client in response to a <<Download Game State Request>>.
+
+Implemented in https://github.com/piot/nimble-serialize-c/blob/main/src/lib/server_out.c#L76[`nimbleSerializeServerOutGameStateResponse()`].
 
 [cols="1,1,2"]
 |===
@@ -88,10 +150,6 @@ implemented in `nimbleSerializeServerOutGameStateResponse()`.
 |Command
 |`NimbleSerializeCmdGameStateResponse` (0x0B)
 
-|_U8_
-|_DEBUG ONLY: StepIdDebugMarker_
-|0x9a
-
 |StepId (U32)
 |StepId
 |The StepId/TickId when the game state was captured, before input and update was applied to the state.
@@ -100,15 +158,13 @@ implemented in `nimbleSerializeServerOutGameStateResponse()`.
 |State Octet Size
 |The number of octets in the total state.
 
-|_U8_
-|_DEBUG ONLY: Blob Stream Channel ID debug marker_
-|0x19
-
 |U32
 |Blob Stream Channel ID
 |The game state will be transferred over this blob stream channel.
 
 |===
+
+
 
 
 
@@ -124,17 +180,13 @@ Sent from the server to the client. A blob stream chunk is usually 1024 octets.
 |Command
 |`NimbleSerializeCmdGameStatePart` (0x0A)
 
-|_U8_
-|_DEBUG ONLY: Blob Stream Channel ID debug marker_
-|0x19
-
 |U32
 |Blob Stream Channel ID
 |The blob stream channel Id that the client is receiving the state on.
 
 |BlobStreamOutEntrySend
 |Blob Stream Out Entry format
-a|See BlobStream documentation for specifics. But essentially it is:
+a|See https://github.com/piot/blob-stream/blob/main/docs/index.md[BlobStream documentation] for specifics. But essentially it is:
 
 * U8 Blob Stream Command (0x01)
 * U32 ChunkID that follows
@@ -145,9 +197,11 @@ a|See BlobStream documentation for specifics. But essentially it is:
 
 
 
+
+
 === Game State Chunk Ack
 
-Sent from the client to the server to acknowledge which chunks that have been received.
+Sent from the client to the server to acknowledge which chunks of the game state that have been received.
 
 [cols="1,1,2"]
 |===
@@ -157,17 +211,13 @@ Sent from the client to the server to acknowledge which chunks that have been re
 |Command
 |`NimbleSerializeCmdDownloadGameStateStatus` (0x04)
 
-|_U8_
-|_DEBUG ONLY: Blob Stream Channel ID debug marker_
-|0x19
-
 |U32
 |Blob Stream Channel ID
 |The blob stream channel Id that the client is receiving the state on.
 
 |BlobStreamInLogicSend
 |Blob Stream In Logic format
-a|See BlobStream documentation for specifics. But essentially it is:
+a|See https://github.com/piot/blob-stream/blob/main/docs/index.md[BlobStream documentation] for specifics. But essentially it is:
 
 * U8 Blob Stream Command (0x02)
 * U32 ChunkID that the client is waiting for
@@ -181,9 +231,9 @@ a|See BlobStream documentation for specifics. But essentially it is:
 
 === Game Step Request
 
-Sent from the client to the server to acknowledge which chunks that have been received.
+Send Steps (Human Player Inputs) from the client to the server. The Steps should be sent with redundancy, include all Steps that hasn't been acked by the server in <<Game Step Response>>.
 
-Implemented by `nimbleClientSendStepsToServer()`
+Implemented by `https://github.com/piot/nimble-steps-serialize-c/blob/main/src/lib/pending_out_serialize.c#L11[nbsPendingStepsSerializeOutHeader()]`.
 
 [cols="1,1,2"]
 |===
@@ -192,10 +242,6 @@ Implemented by `nimbleClientSendStepsToServer()`
 |U8
 |Command
 |`NimbleSerializeCmdGameStep` (0x02)
-
-|_U8_
-|_DEBUG ONLY: Blob Stream Channel ID debug marker_
-|0x19
 
 |U32
 |Latest authoritative StepId
@@ -209,11 +255,7 @@ Implemented by `nimbleClientSendStepsToServer()`
 |Start StepId
 |The first stepId in the stream that follows.
 
-|U8
-|Step Count
-|The number of steps that follows in the stream.
-
-|<<Step Header>> * Step Count
+|<<Multiple Steps For Participants>> * Step Count
 |Predicted steps
 |The predicted combined steps for all the local players on the client.
 
@@ -225,9 +267,9 @@ Implemented by `nimbleClientSendStepsToServer()`
 
 === Game Step Response
 
-Sent from the server to the client with authoritative steps.
+Sent from the server to the client with the authoritative steps (combined Steps from all participants).
 
-Implemented by `nimbleSerializeServerOutStepHeader()`
+Implemented by https://github.com/piot/nimble-serialize-c/blob/main/src/lib/server_out.c#L20[`nimbleSerializeServerOutStepHeader()`].
 
 [cols="1,1,2"]
 |===
@@ -251,25 +293,19 @@ Implemented by `nimbleSerializeServerOutStepHeader()`
 
 |U32
 |First StepId in range
-|The first stepId in the range of steps that the client is probably missing (determined from <<Game Step Request>>).
+|The first stepId in the range of steps that follows. It contains steps that the client has previously indicated that it is missing (determined from <<Game Step Request>>).
 
 |U8
 |Range Count
 |The number of ranges following.
 
-|Authoritative Step Range * Range Count
+|<<Authoritative Step Range>> * Range Count
 |Authoritative Step Ranges
 |The authoritative step ranges that the client is probably missing.
 
 |===
 
-
-
-
-
-== Types
-
-=== Authoritative Step Range
+==== Authoritative Step Range
 
 [cols="1,1,2"]
 |===
@@ -279,36 +315,37 @@ Implemented by `nimbleSerializeServerOutStepHeader()`
 |Delta StepId
 |The difference between the last stepId in the previous range. Or the `First StepId in range` if this is the first range.
 
-|U8
-|Step Count
-|The number of steps following in this range. Each step has 1 step higher stepId than the previous step.
-
-|<<Step Header>>
+|<<Multiple Steps For Participants>>
 |Authoritative Steps
 |The authoritative steps for all the participants in the game for this step range.
 
 |===
 
-=== Participant Join Result
+
+
+
+== Types
+
+=== Multiple Steps For Participants
+
+Multiple steps for multiple participants. Used both for predicted steps (includes local participants) and authoritative steps (includes all participants in the game session).
 
 [cols="1,1,2"]
 |===
 |Type | Name | Description
 
 |U8
-|Local Player Identifier
-|Game session unique identifier for the local player on the client.
+|Step Count
+|The number of step for participants that follows.
 
-|U8
-|Participant Id
-|Game session assigned unique participant identifier for the local player on the client.
-
+|<<Step For Participants>> * Step Count
+|Steps
+|
 |===
 
+==== Step For Participants
 
-=== Step Header
-
-Used both for predicted and authoritative steps.
+A single step that includes multiple participants.
 
 [cols="1,1,2"]
 |===
@@ -323,12 +360,14 @@ Used both for predicted and authoritative steps.
 |Steps follows for that number of participants
 
 |U8
-|<<Step for Participant>>
+|<<Step for one Participant>> * Participant Count
 |Steps follows for that number of participants
 
 |===
 
-=== Step for Participant
+==== Step for one Participant
+
+A single step for the indicated participant ID.
 
 [cols="1,1,2"]
 |===
@@ -345,30 +384,5 @@ Used both for predicted and authoritative steps.
 |`U8 * Step octet size`
 |Step payload
 |Application specific step payload. It is recommended that first octet in the payload can be a zero to indicate that the step is "unknown", no input is pressed.
-
-
-|===
-
-=== Version
-
-The semantic version. Used for the Nimble Protocol and the Application.
-
-[cols="1,1,2"]
-|===
-|Type | Name | Description
-
-|U8
-|Major
-|
-
-
-|U8
-|Minor
-|
-
-
-|U8
-|Patch
-|
 
 |===
