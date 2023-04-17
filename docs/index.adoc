@@ -4,6 +4,7 @@ Copyright (C) 2022 Peter Bjorklund. All rights reserved.
 
 == Nimble Protocol
 
+All commands documented below is usually prepended using the https://github.com/piot/ordered-datagram-c[Ordered Datagram Protocol]. Ordered Datagrams has a `U16` sequence number that ensures that out of order and duplicate datagrams are ignored.
 
 === Join Game Request
 
