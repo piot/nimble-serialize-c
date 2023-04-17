@@ -5,6 +5,7 @@
 #include <flood/in_stream.h>
 #include <flood/out_stream.h>
 #include <nimble-serialize/version.h>
+#include "tiny-libc/tiny_libc.h"
 
 /// Write a version to an FldOutStream.
 /// @param outStream
@@ -56,4 +57,11 @@ int nimbleSerializeInVersion(struct FldInStream* inStream, NimbleSerializeVersio
 bool nimbleSerializeVersionIsEqual(const NimbleSerializeVersion* a, const NimbleSerializeVersion* b)
 {
     return a->major == b->major && a->minor == b->minor && a->patch == b->patch;
+}
+
+
+const char* nimbleSerializeVersionToString(const NimbleSerializeVersion* version, char* buf, size_t maxBufSize)
+{
+    tc_snprintf(buf, maxBufSize, "%d.%d.%d", version->major, version->minor, version->patch);
+    return buf;
 }

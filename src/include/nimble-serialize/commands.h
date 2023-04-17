@@ -10,15 +10,15 @@
 #define NimbleSerializeCmdNop (0x00)
 
 // Requests from Client to Server
-#define NimbleSerializeCmdJoinGameRequest (0x04)
-#define NimbleSerializeCmdGameStep (0x05)
-#define NimbleSerializeCmdDownloadGameStateRequest (0x06)
-#define NimbleSerializeCmdDownloadGameStateStatus (0x07)
+#define NimbleSerializeCmdJoinGameRequest (0x01)
+#define NimbleSerializeCmdGameStep (0x02)
+#define NimbleSerializeCmdDownloadGameStateRequest (0x03)
+#define NimbleSerializeCmdDownloadGameStateStatus (0x04)
 
 // Responses from Server to client
-#define NimbleSerializeCmdGameStepResponse (0x24)
-#define NimbleSerializeCmdJoinGameResponse (0x25)
-#define NimbleSerializeCmdGameStatePart (0x27)
-#define NimbleSerializeCmdGameStateResponse (0x28)
+#define NimbleSerializeCmdGameStepResponse (0x08)
+#define NimbleSerializeCmdJoinGameResponse (0x09)
+#define NimbleSerializeCmdGameStatePart (0x0a)
+#define NimbleSerializeCmdGameStateResponse (0x0b)
 
 #endif

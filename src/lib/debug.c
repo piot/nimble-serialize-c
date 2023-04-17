@@ -3,36 +3,22 @@
  *  Licensed under the MIT License. See LICENSE in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 #include <clog/clog.h>
-#include <nimble-serialize/commands.h>
 #include <nimble-serialize/debug.h>
 #include <stdio.h>
 
-const char* nimbleSerializeCmdToString(uint8_t t)
+const char* nimbleSerializeCmdToString(uint8_t cmd)
 {
-    switch (t) {
-        case NimbleSerializeCmdNop:
-            return "Nop";
-        case NimbleSerializeCmdGameStep:
-            return "GameStep";
-        case NimbleSerializeCmdGameStepResponse:
-            return "GameStepResponse";
-        case NimbleSerializeCmdGameStateResponse:
-            return "GameStateResponse";
-        case NimbleSerializeCmdDownloadGameStateRequest:
-            return "DownloadStateRequest";
-        case NimbleSerializeCmdDownloadGameStateStatus:
-            return "DownloadStateStatus";
-        case NimbleSerializeCmdJoinGameRequest:
-            return "JoinGameRequest";
-        case NimbleSerializeCmdJoinGameResponse:
-            return "JoinGameResponse";
-        case NimbleSerializeCmdGameStatePart:
-            return "DownloadGameStatePart";
-        default:
-        {
-            CLOG_ERROR("Unknown serialize command: %02X", t)
-        }
+    static const char* lookup[] = {
+        "NOP",      "JoinGameRequest", "GameStep",         "GameStateRequest", "GameStateStatus", "not used",
+        "not used", "not used",        "GameStepResponse", "JoinGameResponse", "GameStatePart",   "GameStateResponse",
+    };
+
+    if (cmd < 0 || cmd >= sizeof(lookup) / sizeof(lookup[0])) {
+        CLOG_ERROR("Unknown serialize command: %02X", cmd)
+        return 0;
     }
+
+    return lookup[cmd];
 }
 
 // Responses

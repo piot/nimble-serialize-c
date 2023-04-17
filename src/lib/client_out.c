@@ -7,6 +7,8 @@
 #include <nimble-serialize/serialize.h>
 #include <clog/clog.h>
 
+ NimbleSerializeVersion g_nimbleProtocolVersion = {0,0,1};
+
 static int nimbleSerializeClientOutParticipantConnectionJoin(FldOutStream* stream,
                                                              const struct NimbleSerializePlayerJoinOptions* joinInfos,
                                                              size_t localParticipantCount)
@@ -29,6 +31,7 @@ int nimbleSerializeClientOutGameJoin(FldOutStream* stream,
 {
 #define COMMAND_DEBUG "ClientOut"
     nimbleSerializeWriteCommand(stream, NimbleSerializeCmdJoinGameRequest, COMMAND_DEBUG);
+    nimbleSerializeOutVersion(stream, &g_nimbleProtocolVersion);
     nimbleSerializeOutVersion(stream, &options->applicationVersion);
     nimbleSerializeClientOutParticipantConnectionJoin(stream, options->players, options->playerCount);
     return 0;
