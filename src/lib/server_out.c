@@ -2,7 +2,7 @@
  *  Copyright (c) Peter Bjorklund. All rights reserved.
  *  Licensed under the MIT License. See LICENSE in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
-#include "clog/clog.h"
+#include <clog/clog.h>
 #include <flood/out_stream.h>
 #include <nimble-serialize/commands.h>
 #include <nimble-serialize/server_out.h>
@@ -53,8 +53,6 @@ static int writeConnectionIndexAndParticipantIds(FldOutStream* outStream, uint8_
     return 0;
 }
 
-
-
 /// Serialize a game join response for a previously received game join request.
 /// @param outStream
 /// @param participantConnectionIndex
@@ -72,8 +70,9 @@ int nimbleSerializeServerOutGameJoinResponse(FldOutStream* outStream,
     return errorCode;
 }
 
-
-int nimbleSerializeServerOutGameStateResponse(FldOutStream* outStream, SerializeGameState outGameState, NimbleSerializeBlobStreamChannelId blobStreamChannelId) {
+int nimbleSerializeServerOutGameStateResponse(FldOutStream* outStream, SerializeGameState outGameState,
+                                              NimbleSerializeBlobStreamChannelId blobStreamChannelId)
+{
     nimbleSerializeWriteCommand(outStream, NimbleSerializeCmdGameStateResponse, "ServerOut");
     nimbleSerializeOutStateId(outStream, outGameState.stepId);
     CLOG_VERBOSE("sending octetCount %zu", outGameState.gameStateOctetCount);
