@@ -48,6 +48,5 @@ int nimbleSerializeInStateId(struct FldInStream* stream, NimbleSerializeStateId*
 
 void nimbleSerializeWriteCommand(struct FldOutStream* outStream, uint8_t cmd, const char* prefix)
 {
-    CLOG_VERBOSE("%s: cmd: %s", prefix, nimbleSerializeCmdToString(cmd));
     fldOutStreamWriteUInt8(outStream, cmd);
 }
