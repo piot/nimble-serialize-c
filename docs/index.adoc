@@ -130,6 +130,10 @@ Usually the complete state is only set on the server each X tick (X is usually a
 |Command
 |`NimbleSerializeCmdDownloadGameStateRequest` (0x03)
 
+|U8
+|ClientRequestId
+|Increased everytime the client starts a new download game state attempt.
+
 |===
 
 
@@ -150,6 +154,10 @@ Implemented in https://github.com/piot/nimble-serialize-c/blob/main/src/lib/serv
 |U8
 |Command
 |`NimbleSerializeCmdGameStateResponse` (0x0B)
+
+|U8
+|ClientRequestId
+|The request ID provided by the client in the Download Game State Request
 
 |StepId (U32)
 |StepId
@@ -337,7 +345,7 @@ Multiple steps for multiple participants. Used both for predicted steps (include
 
 |U8
 |Step Count
-|The number of step for participants that follows.
+|The number of step for participants that follows. Allowed to be zero.
 
 |<<Step For Participants>> * Step Count
 |Steps
