@@ -23,7 +23,8 @@ typedef struct SerializeGameState {
 } SerializeGameState;
 
 int nimbleSerializeServerOutStepHeader(struct FldOutStream* outStream, uint32_t lastReceivedFromRemote,
-                                       size_t connectionSpecificBufferCount, int8_t deltaAgainstAuthoritativeBuffer);
+                                       size_t connectionSpecificBufferCount, int8_t deltaAgainstAuthoritativeBuffer,
+                                       uint16_t monotonicTimeLowerBitsMs);
 
 int nimbleSerializeServerOutGameJoinResponse(struct FldOutStream* outStream,
                                              NimbleSerializeParticipantConnectionIndex connectionIndex,

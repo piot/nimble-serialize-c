@@ -18,11 +18,12 @@
 /// buffer.
 /// @return
 int nimbleSerializeServerOutStepHeader(FldOutStream* outStream, uint32_t lastReceivedStepIdFromClient,
-                                       size_t connectionSpecificBufferCount, int8_t deltaAgainstAuthoritativeBuffer)
+                                       size_t connectionSpecificBufferCount, int8_t deltaAgainstAuthoritativeBuffer, uint16_t monotonicShortMs)
 {
     nimbleSerializeWriteCommand(outStream, NimbleSerializeCmdGameStepResponse, DEBUG_PREFIX);
     fldOutStreamWriteUInt8(outStream, connectionSpecificBufferCount);
     fldOutStreamWriteInt8(outStream, deltaAgainstAuthoritativeBuffer);
+    fldOutStreamWriteUInt16(outStream, monotonicShortMs);
     return fldOutStreamWriteUInt32(outStream, lastReceivedStepIdFromClient);
 }
 
