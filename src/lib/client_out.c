@@ -26,6 +26,10 @@ static int nimbleSerializeClientOutParticipantConnectionJoin(FldOutStream* strea
 }
 
 
+/// Writes a JoinGameRequest to the octet stream
+/// @param stream
+/// @param options
+/// @return
 int nimbleSerializeClientOutGameJoin(FldOutStream* stream,
                                             const NimbleSerializeGameJoinOptions* options)
 {

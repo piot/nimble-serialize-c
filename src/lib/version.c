@@ -57,6 +57,11 @@ bool nimbleSerializeVersionIsEqual(const NimbleSerializeVersion* a, const Nimble
     return a->major == b->major && a->minor == b->minor && a->patch == b->patch;
 }
 
+/// Returns a human readable string for the version
+/// @param version
+/// @param buf
+/// @param maxBufSize
+/// @return
 const char* nimbleSerializeVersionToString(const NimbleSerializeVersion* version, char* buf, size_t maxBufSize)
 {
     tc_snprintf(buf, maxBufSize, "%d.%d.%d", version->major, version->minor, version->patch);

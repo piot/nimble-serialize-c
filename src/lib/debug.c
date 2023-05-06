@@ -6,6 +6,10 @@
 #include <nimble-serialize/debug.h>
 #include <stdio.h>
 
+/// Converts a Nimble command to a string
+/// Dependant on the `commands.h` header file
+/// @param cmd
+/// @return
 const char* nimbleSerializeCmdToString(uint8_t cmd)
 {
     static const char* lookup[] = {
@@ -21,8 +25,10 @@ const char* nimbleSerializeCmdToString(uint8_t cmd)
     return lookup[cmd];
 }
 
-// Responses
-
+/// Writes the hex data to stdout. Only used for debugging
+/// @param debug
+/// @param data
+/// @param length
 void nimbleSerializeDebugHex(const char* debug, const uint8_t* data, size_t length)
 {
     CLOG_INFO(" ### %s %s ###", debug, nimbleSerializeCmdToString(data[0]));

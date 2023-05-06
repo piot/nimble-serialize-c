@@ -10,6 +10,7 @@
 #define DEBUG_PREFIX "ServerOut"
 
 /// Writes a Step (Human Player Input) to an octet stream.
+/// Typically used on the server.
 /// @param outStream the target octet stream.
 /// @param lastReceivedStepIdFromClient The last received authoritative step received by the client.
 /// @param connectionSpecificBufferCount Indicates how many Steps that are in the server incoming buffer for that
@@ -18,7 +19,8 @@
 /// buffer.
 /// @return
 int nimbleSerializeServerOutStepHeader(FldOutStream* outStream, uint32_t lastReceivedStepIdFromClient,
-                                       size_t connectionSpecificBufferCount, int8_t deltaAgainstAuthoritativeBuffer, uint16_t monotonicShortMs)
+                                       size_t connectionSpecificBufferCount, int8_t deltaAgainstAuthoritativeBuffer,
+                                       uint16_t monotonicShortMs)
 {
     nimbleSerializeWriteCommand(outStream, NimbleSerializeCmdGameStepResponse, DEBUG_PREFIX);
     fldOutStreamWriteUInt8(outStream, connectionSpecificBufferCount);
@@ -55,6 +57,7 @@ static int writeConnectionIndexAndParticipantIds(FldOutStream* outStream, uint8_
 }
 
 /// Serialize a game join response for a previously received game join request.
+/// Typically used on the server.
 /// @param outStream
 /// @param participantConnectionIndex
 /// @param participants
@@ -71,6 +74,13 @@ int nimbleSerializeServerOutGameJoinResponse(FldOutStream* outStream,
     return errorCode;
 }
 
+/// Writes a response to a download game state request
+/// Typically used on the server.
+/// @param outStream
+/// @param outGameState
+/// @param clientRequestId
+/// @param blobStreamChannelId
+/// @return
 int nimbleSerializeServerOutGameStateResponse(FldOutStream* outStream, SerializeGameState outGameState,
                                               uint8_t clientRequestId,
                                               NimbleSerializeBlobStreamChannelId blobStreamChannelId)
