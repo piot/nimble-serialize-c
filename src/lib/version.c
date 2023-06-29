@@ -8,9 +8,9 @@
 #include <tiny-libc/tiny_libc.h>
 
 /// Write a version to an FldOutStream.
-/// @param outStream
-/// @param version
-/// @return
+/// @param outStream out stream
+/// @param version version to write
+/// @return negative on error
 int nimbleSerializeOutVersion(struct FldOutStream* outStream, const NimbleSerializeVersion* version)
 {
     int error = fldOutStreamWriteUInt16(outStream, version->major);
@@ -28,9 +28,9 @@ int nimbleSerializeOutVersion(struct FldOutStream* outStream, const NimbleSerial
 }
 
 /// Read a version from a FldInStream.
-/// @param inStream
-/// @param targetVersion
-/// @return
+/// @param inStream stream to read from
+/// @param[out] targetVersion version read from stream
+/// @return negative on error
 int nimbleSerializeInVersion(struct FldInStream* inStream, NimbleSerializeVersion* targetVersion)
 {
     int error = fldInStreamReadUInt16(inStream, &targetVersion->major);
@@ -49,19 +49,19 @@ int nimbleSerializeInVersion(struct FldInStream* inStream, NimbleSerializeVersio
 }
 
 /// Check two versions for equality.
-/// @param a
-/// @param b
-/// @return
+/// @param a first to compare with
+/// @param b second to compare with
+/// @return true if equal
 bool nimbleSerializeVersionIsEqual(const NimbleSerializeVersion* a, const NimbleSerializeVersion* b)
 {
     return a->major == b->major && a->minor == b->minor && a->patch == b->patch;
 }
 
 /// Returns a human readable string for the version
-/// @param version
-/// @param buf
-/// @param maxBufSize
-/// @return
+/// @param version version to stringify
+/// @param buf target character buffer
+/// @param maxBufSize maximum number of octets of buf
+/// @return buf
 const char* nimbleSerializeVersionToString(const NimbleSerializeVersion* version, char* buf, size_t maxBufSize)
 {
     tc_snprintf(buf, maxBufSize, "%d.%d.%d", version->major, version->minor, version->patch);

@@ -17,13 +17,13 @@
 /// connection. Negative numbers represents the number of Steps it is behind.
 /// @param deltaAgainstAuthoritativeBuffer The clamped indication on how far it is behind on the actual authoritative
 /// buffer.
-/// @return
+/// @return negative on error
 int nimbleSerializeServerOutStepHeader(FldOutStream* outStream, uint32_t lastReceivedStepIdFromClient,
                                        size_t connectionSpecificBufferCount, int8_t deltaAgainstAuthoritativeBuffer,
                                        uint16_t monotonicShortMs)
 {
     nimbleSerializeWriteCommand(outStream, NimbleSerializeCmdGameStepResponse, DEBUG_PREFIX);
-    fldOutStreamWriteUInt8(outStream, connectionSpecificBufferCount);
+    fldOutStreamWriteUInt8(outStream, (uint8_t) connectionSpecificBufferCount);
     fldOutStreamWriteInt8(outStream, deltaAgainstAuthoritativeBuffer);
     fldOutStreamWriteUInt16(outStream, monotonicShortMs);
     return fldOutStreamWriteUInt32(outStream, lastReceivedStepIdFromClient);
@@ -39,15 +39,15 @@ static int writeConnectionIndexAndParticipantIds(FldOutStream* outStream, uint8_
     }
     if (participantCount == 0) {
         CLOG_ERROR("participant count zero is not allowed")
-        return -44;
+        // return -44;
     }
 
-    fldOutStreamWriteUInt8(outStream, participantCount);
+    fldOutStreamWriteUInt8(outStream, (uint8_t) participantCount);
 
     for (size_t i = 0; i < participantCount; ++i) {
         const NimbleSerializeParticipant* participant = &participants[i];
-        fldOutStreamWriteUInt8(outStream, participant->localIndex);
-        errorCode = fldOutStreamWriteUInt8(outStream, participant->id);
+        fldOutStreamWriteUInt8(outStream, (uint8_t) participant->localIndex);
+        errorCode = fldOutStreamWriteUInt8(outStream, (uint8_t) participant->id);
         if (errorCode < 0) {
             return errorCode;
         }
@@ -58,11 +58,11 @@ static int writeConnectionIndexAndParticipantIds(FldOutStream* outStream, uint8_
 
 /// Serialize a game join response for a previously received game join request.
 /// Typically used on the server.
-/// @param outStream
-/// @param participantConnectionIndex
-/// @param participants
-/// @param participantCount
-/// @return
+/// @param outStream out stream
+/// @param participantConnectionIndex the index of the participant connection
+/// @param participants participant info
+/// @param participantCount number of participants
+/// @return negative on error
 int nimbleSerializeServerOutGameJoinResponse(FldOutStream* outStream,
                                              NimbleSerializeParticipantConnectionIndex participantConnectionIndex,
                                              const NimbleSerializeParticipant* participants, size_t participantCount)
@@ -76,11 +76,11 @@ int nimbleSerializeServerOutGameJoinResponse(FldOutStream* outStream,
 
 /// Writes a response to a download game state request
 /// Typically used on the server.
-/// @param outStream
-/// @param outGameState
-/// @param clientRequestId
-/// @param blobStreamChannelId
-/// @return
+/// @param outStream ut stream
+/// @param outGameState application specific total state
+/// @param clientRequestId ID of the previous request
+/// @param blobStreamChannelId the channel to transfer the state on
+/// @return negative on error
 int nimbleSerializeServerOutGameStateResponse(FldOutStream* outStream, SerializeGameState outGameState,
                                               uint8_t clientRequestId,
                                               NimbleSerializeBlobStreamChannelId blobStreamChannelId)
@@ -88,7 +88,7 @@ int nimbleSerializeServerOutGameStateResponse(FldOutStream* outStream, Serialize
     nimbleSerializeWriteCommand(outStream, NimbleSerializeCmdGameStateResponse, "ServerOut");
     fldOutStreamWriteUInt8(outStream, clientRequestId);
     nimbleSerializeOutStateId(outStream, outGameState.stepId);
-    CLOG_VERBOSE("sending octetCount %zu", outGameState.gameStateOctetCount);
-    fldOutStreamWriteUInt32(outStream, outGameState.gameStateOctetCount);
+    CLOG_VERBOSE("sending octetCount %zu", outGameState.gameStateOctetCount)
+    fldOutStreamWriteUInt32(outStream, (uint32_t) outGameState.gameStateOctetCount);
     return nimbleSerializeOutBlobStreamChannelId(outStream, blobStreamChannelId);
 }

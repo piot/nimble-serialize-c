@@ -8,8 +8,8 @@
 
 /// Converts a Nimble command to a string
 /// Dependant on the `commands.h` header file
-/// @param cmd
-/// @return
+/// @param cmd command to log
+/// @return return string representation of cmd
 const char* nimbleSerializeCmdToString(uint8_t cmd)
 {
     static const char* lookup[] = {
@@ -17,21 +17,22 @@ const char* nimbleSerializeCmdToString(uint8_t cmd)
         "not used", "not used",        "GameStepResponse", "JoinGameResponse", "GameStatePart",   "GameStateResponse",
     };
 
-    if (cmd < 0 || cmd >= sizeof(lookup) / sizeof(lookup[0])) {
+    if (cmd >= sizeof(lookup) / sizeof(lookup[0])) {
         CLOG_ERROR("Unknown serialize command: %02X", cmd)
-        return 0;
+        //return 0;
     }
 
     return lookup[cmd];
 }
 
 /// Writes the hex data to stdout. Only used for debugging
-/// @param debug
-/// @param data
-/// @param length
+/// @param debug description prefix
+/// @param data payload to log as hex
+/// @param length octet size of data
 void nimbleSerializeDebugHex(const char* debug, const uint8_t* data, size_t length)
 {
-    CLOG_INFO(" ### %s %s ###", debug, nimbleSerializeCmdToString(data[0]));
+    (void) debug;
+    CLOG_INFO(" ### %s %s ###", debug, nimbleSerializeCmdToString(data[0]))
 
     for (size_t i = 1; i < length; ++i) {
         printf("%02X ", data[i]);
