@@ -88,7 +88,7 @@ int nimbleSerializeServerOutGameStateResponse(FldOutStream* outStream, Serialize
     nimbleSerializeWriteCommand(outStream, NimbleSerializeCmdGameStateResponse, "ServerOut");
     fldOutStreamWriteUInt8(outStream, clientRequestId);
     nimbleSerializeOutStateId(outStream, outGameState.stepId);
-    CLOG_VERBOSE("sending octetCount %zu", outGameState.gameStateOctetCount);
+    CLOG_VERBOSE("sending octetCount %zu", outGameState.gameStateOctetCount)
     fldOutStreamWriteUInt32(outStream, (uint32_t) outGameState.gameStateOctetCount);
     return nimbleSerializeOutBlobStreamChannelId(outStream, blobStreamChannelId);
 }

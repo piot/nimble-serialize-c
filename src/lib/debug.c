@@ -32,7 +32,7 @@ const char* nimbleSerializeCmdToString(uint8_t cmd)
 void nimbleSerializeDebugHex(const char* debug, const uint8_t* data, size_t length)
 {
     (void) debug;
-    CLOG_INFO(" ### %s %s ###", debug, nimbleSerializeCmdToString(data[0]));
+    CLOG_INFO(" ### %s %s ###", debug, nimbleSerializeCmdToString(data[0]))
 
     for (size_t i = 1; i < length; ++i) {
         printf("%02X ", data[i]);
