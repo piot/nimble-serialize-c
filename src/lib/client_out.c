@@ -17,7 +17,7 @@ static int nimbleSerializeClientOutParticipantConnectionJoin(FldOutStream* strea
         CLOG_ERROR("participant count must be greater than zero")
     }
     CLOG_VERBOSE("joining participant count %zu", localParticipantCount)
-    fldOutStreamWriteUInt8(stream, localParticipantCount);
+    fldOutStreamWriteUInt8(stream, (uint8_t) localParticipantCount);
     for (size_t i = 0; i < localParticipantCount; ++i) {
         fldOutStreamWriteUInt8(stream, joinInfos[i].localIndex);
     }
@@ -27,9 +27,9 @@ static int nimbleSerializeClientOutParticipantConnectionJoin(FldOutStream* strea
 
 
 /// Writes a JoinGameRequest to the octet stream
-/// @param stream
-/// @param options
-/// @return
+/// @param stream out stream
+/// @param options game join options
+/// @return negative on error
 int nimbleSerializeClientOutGameJoin(FldOutStream* stream,
                                             const NimbleSerializeGameJoinOptions* options)
 {
