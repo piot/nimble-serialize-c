@@ -9,6 +9,9 @@
 #include <nimble-serialize/debug.h>
 #endif
 
+#define NIMBLE_SERIALIZE_MARKER_CHANNEL_ID (0x19)
+#define NIMBLE_SERIALIZE_MARKER_STATE_ID (0x9a)
+
 /// Writes a channelId to the octet stream
 /// @param stream out stream
 /// @param channelId blob stream channel id
