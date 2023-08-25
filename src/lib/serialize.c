@@ -9,11 +9,36 @@
 #include <nimble-serialize/debug.h>
 #endif
 
+
 #if defined CONFIGURATION_DEBUG
 static const uint8_t NIMBLE_SERIALIZE_MARKER_CHANNEL_ID = 0x19;
 static const uint8_t NIMBLE_SERIALIZE_MARKER_STATE_ID = 0x9a;
+static const uint8_t NIMBLE_SERIALIZE_MARKER_NONCE_ID = 0xe2;
 #endif
 
+/// Writes a nonce to the octet stream
+/// @param stream out stream
+/// @param nonce nonce
+/// @return negative on error
+int nimbleSerializeOutNonce(struct FldOutStream* stream, NimbleSerializeNonce nonce)
+{
+#if defined CONFIGURATION_DEBUG
+    fldOutStreamWriteMarker(stream, NIMBLE_SERIALIZE_MARKER_NONCE_ID);
+#endif
+    return fldOutStreamWriteUInt64(stream, nonce);
+}
+
+/// Reads a nonce from the octet stream
+/// @param stream out stream
+/// @param nonce nonce
+/// @return negative on error
+int nimbleSerializeInNonce(struct FldInStream* stream, NimbleSerializeNonce* nonce)
+{
+#if defined CONFIGURATION_DEBUG
+    fldInStreamCheckMarker(stream, NIMBLE_SERIALIZE_MARKER_NONCE_ID);
+#endif
+    return fldInStreamReadUInt64(stream, nonce);
+}
 
 /// Writes a channelId to the octet stream
 /// @param stream out stream

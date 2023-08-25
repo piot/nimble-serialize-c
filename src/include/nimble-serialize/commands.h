@@ -20,5 +20,6 @@
 #define NimbleSerializeCmdJoinGameResponse (0x09)
 #define NimbleSerializeCmdGameStatePart (0x0a)
 #define NimbleSerializeCmdGameStateResponse (0x0b)
+#define NimbleSerializeCmdJoinGameOutOfParticipantSlotsResponse (0x0c)
 
 #endif

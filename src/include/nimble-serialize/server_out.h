@@ -30,6 +30,9 @@ int nimbleSerializeServerOutGameJoinResponse(struct FldOutStream* outStream,
                                              NimbleSerializeParticipantConnectionIndex connectionIndex,
                                              const NimbleSerializeParticipant* participants, size_t participantCount);
 
+int nimbleSerializeServerOutGameJoinOutOfParticipantSlotsResponse(struct FldOutStream* outStream,
+                                                                  NimbleSerializeNonce reqGameNonce);
+
 int nimbleSerializeServerOutGameStateResponse(struct FldOutStream* outStream, SerializeGameState outGameState,
                                               uint8_t clientRequestId,
                                               NimbleSerializeBlobStreamChannelId blobStreamChannelId);

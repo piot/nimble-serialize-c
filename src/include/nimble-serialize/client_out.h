@@ -21,6 +21,7 @@ typedef struct NimbleSerializeGameJoinOptions {
     NimbleSerializeVersion applicationVersion;
     NimbleSerializePlayerJoinOptions players[8];
     size_t playerCount;
+    NimbleSerializeNonce nonce;
 } NimbleSerializeGameJoinOptions;
 
 int nimbleSerializeClientOutGameJoin(struct FldOutStream* stream, const NimbleSerializeGameJoinOptions* options);

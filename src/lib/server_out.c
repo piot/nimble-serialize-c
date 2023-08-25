@@ -74,6 +74,20 @@ int nimbleSerializeServerOutGameJoinResponse(FldOutStream* outStream,
     return errorCode;
 }
 
+/// Serializes an out of participant slot response
+/// @param outStream outstream
+/// @param reqGameNonce request join game nonce
+/// @return negative on error
+int nimbleSerializeServerOutGameJoinOutOfParticipantSlotsResponse(FldOutStream* outStream,
+                                                                  NimbleSerializeNonce reqGameNonce)
+{
+    nimbleSerializeWriteCommand(outStream, NimbleSerializeCmdJoinGameOutOfParticipantSlotsResponse, DEBUG_PREFIX);
+
+    int errorCode = nimbleSerializeOutNonce(outStream, reqGameNonce);
+
+    return errorCode;
+}
+
 /// Writes a response to a download game state request
 /// Typically used on the server.
 /// @param outStream ut stream

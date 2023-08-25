@@ -2,12 +2,12 @@
  *  Copyright (c) Peter Bjorklund. All rights reserved.
  *  Licensed under the MIT License. See LICENSE in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
-#include <nimble-serialize/client_out.h>
-#include <flood/out_stream.h>
-#include <nimble-serialize/serialize.h>
 #include <clog/clog.h>
+#include <flood/out_stream.h>
+#include <nimble-serialize/client_out.h>
+#include <nimble-serialize/serialize.h>
 
- NimbleSerializeVersion g_nimbleProtocolVersion = {0,0,1};
+NimbleSerializeVersion g_nimbleProtocolVersion = {0, 0, 1};
 
 static int nimbleSerializeClientOutParticipantConnectionJoin(FldOutStream* stream,
                                                              const struct NimbleSerializePlayerJoinOptions* joinInfos,
@@ -25,18 +25,17 @@ static int nimbleSerializeClientOutParticipantConnectionJoin(FldOutStream* strea
     return 0;
 }
 
-
 /// Writes a JoinGameRequest to the octet stream
 /// @param stream out stream
 /// @param options game join options
 /// @return negative on error
-int nimbleSerializeClientOutGameJoin(FldOutStream* stream,
-                                            const NimbleSerializeGameJoinOptions* options)
+int nimbleSerializeClientOutGameJoin(FldOutStream* stream, const NimbleSerializeGameJoinOptions* options)
 {
 #define COMMAND_DEBUG "ClientOut"
     nimbleSerializeWriteCommand(stream, NimbleSerializeCmdJoinGameRequest, COMMAND_DEBUG);
     nimbleSerializeOutVersion(stream, &g_nimbleProtocolVersion);
     nimbleSerializeOutVersion(stream, &options->applicationVersion);
+    nimbleSerializeOutNonce(stream, options->nonce);
     nimbleSerializeClientOutParticipantConnectionJoin(stream, options->players, options->playerCount);
     return 0;
 }
