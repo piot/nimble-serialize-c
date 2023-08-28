@@ -15,8 +15,6 @@ typedef uint64_t NimbleSerializeNonce;
 
 #define MAX_LOCAL_PLAYERS (4)
 
-typedef uint8_t NimbleSerializeParticipantConnectState;
 
-const static NimbleSerializeParticipantConnectState NimbleSerializeParticipantStateNormal = 42;
 
 #endif
