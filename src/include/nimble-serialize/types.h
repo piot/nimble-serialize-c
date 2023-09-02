@@ -44,7 +44,7 @@ typedef struct NimbleSerializeParticipant {
 typedef struct NimbleSerializeGameResponse {
     NimbleSerializeParticipantConnectionIndex participantConnectionIndex;
     NimbleSerializeParticipantConnectionSecret participantConnectionSecret;
-    NimbleSerializeParticipant* participants;
+    NimbleSerializeParticipant participants[8];
     size_t participantCount;
 } NimbleSerializeGameResponse;
 
