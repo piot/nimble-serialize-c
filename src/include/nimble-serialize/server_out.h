@@ -8,13 +8,10 @@
 #include <nimble-serialize/serialize.h>
 #include <stdint.h>
 #include <stdlib.h>
+#include <stdbool.h>
 
 struct FldOutStream;
 
-typedef struct NimbleSerializeParticipant {
-    size_t localIndex;
-    size_t id;
-} NimbleSerializeParticipant;
 
 typedef struct SerializeGameState {
     uint32_t stepId;
@@ -26,10 +23,11 @@ int nimbleSerializeServerOutStepHeader(struct FldOutStream* outStream, uint32_t 
                                        size_t connectionSpecificBufferCount, int8_t deltaAgainstAuthoritativeBuffer,
                                        uint16_t monotonicTimeLowerBitsMs);
 
+int nimbleSerializeServerOutConnectResponse(struct FldOutStream* outStream,
+                                            const NimbleSerializeConnectResponse* response);
+
 int nimbleSerializeServerOutGameJoinResponse(struct FldOutStream* outStream,
-                                             NimbleSerializeParticipantConnectionIndex connectionIndex,
-                                             NimbleSerializeParticipantConnectionSecret connectionSecret,
-                                             const NimbleSerializeParticipant* participants, size_t participantCount);
+                                             const NimbleSerializeGameResponse* options);
 
 int nimbleSerializeServerOutGameJoinOutOfParticipantSlotsResponse(struct FldOutStream* outStream,
                                                                   NimbleSerializeNonce reqGameNonce);

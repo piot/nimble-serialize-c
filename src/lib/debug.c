@@ -13,8 +13,8 @@
 const char* nimbleSerializeCmdToString(uint8_t cmd)
 {
     static const char* lookup[] = {
-        "NOP",      "JoinGameRequest", "GameStep",         "GameStateRequest", "GameStateStatus", "not used",
-        "not used", "not used",        "GameStepResponse", "JoinGameResponse", "GameStatePart",   "GameStateResponse", "JoinGameResponseParticipantFull"
+        "NOP",      "JoinGameRequest", "GameStep",         "GameStateRequest", "GameStateStatus", "Connect Request",
+        "not used", "not used",        "GameStepResponse", "JoinGameResponse", "GameStatePart",   "GameStateResponse", "JoinGameResponseParticipantFull", "ConnectResponse"
     };
 
     if (cmd >= sizeof(lookup) / sizeof(lookup[0])) {

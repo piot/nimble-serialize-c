@@ -2,9 +2,11 @@
 cmake_minimum_required(VERSION 3.16.3)
 
 add_library(nimble-serialize STATIC 
+  client_in.c
   client_out.c
   debug.c
   serialize.c
+  server_in.c
   server_out.c
   version.c)
 

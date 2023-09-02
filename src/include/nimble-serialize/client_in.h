@@ -2,8 +2,8 @@
  *  Copyright (c) Peter Bjorklund. All rights reserved.
  *  Licensed under the MIT License. See LICENSE in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
-#ifndef NIMBLE_SERIALIZE_CLIENT_OUT_H
-#define NIMBLE_SERIALIZE_CLIENT_OUT_H
+#ifndef NIMBLE_SERIALIZE_CLIENT_IN_H
+#define NIMBLE_SERIALIZE_CLIENT_IN_H
 
 #include <nimble-serialize/commands.h>
 #include <stdint.h>
@@ -11,11 +11,9 @@
 #include <nimble-serialize/types.h>
 #include <nimble-serialize/version.h>
 
-struct FldOutStream;
+struct FldInStream;
 
-
-
-int nimbleSerializeClientOutGameJoin(struct FldOutStream* stream, const NimbleSerializeGameJoinOptions* options);
-int nimbleSerializeClientOutConnect(FldOutStream* stream, const NimbleSerializeConnectRequest* options);
+int nimbleSerializeClientInConnectResponse(FldInStream* stream, NimbleSerializeConnectResponse* options);
+int nimbleSerializeClientInGameJoinResponse(FldInStream* stream, NimbleSerializeGameResponse* options);
 
 #endif

@@ -29,26 +29,31 @@ int nimbleSerializeServerOutStepHeader(FldOutStream* outStream, uint32_t lastRec
     return fldOutStreamWriteUInt32(outStream, lastReceivedStepIdFromClient);
 }
 
-static int writeConnectionIndexAndParticipantIds(FldOutStream* outStream, uint8_t participantConnectionIndex,
-                                                 NimbleSerializeParticipantConnectionSecret connectionSecret,
-                                                 const NimbleSerializeParticipant* participants,
-                                                 size_t participantCount)
+
+/// Serialize a game join response for a previously received game join request.
+/// Typically used on the server.
+/// @param outStream out stream
+/// @return negative on error
+int nimbleSerializeServerOutGameJoinResponse(FldOutStream* outStream,
+                                             const NimbleSerializeGameResponse* gameResponse)
 {
-    int errorCode = fldOutStreamWriteUInt8(outStream, participantConnectionIndex);
+    nimbleSerializeWriteCommand(outStream, NimbleSerializeCmdJoinGameResponse, DEBUG_PREFIX);
+
+    int errorCode = fldOutStreamWriteUInt8(outStream, gameResponse->participantConnectionIndex);
     if (errorCode < 0) {
         return errorCode;
     }
-    if (participantCount == 0) {
+    if (gameResponse->participantCount == 0) {
         CLOG_ERROR("participant count zero is not allowed")
         // return -44;
     }
 
-    nimbleSerializeOutConnectionSecret(outStream, connectionSecret);
+    nimbleSerializeOutConnectionSecret(outStream, gameResponse->participantConnectionSecret);
 
-    fldOutStreamWriteUInt8(outStream, (uint8_t) participantCount);
+    fldOutStreamWriteUInt8(outStream, (uint8_t) gameResponse->participantCount);
 
-    for (size_t i = 0; i < participantCount; ++i) {
-        const NimbleSerializeParticipant* participant = &participants[i];
+    for (size_t i = 0; i < gameResponse->participantCount; ++i) {
+        const NimbleSerializeParticipant* participant = &gameResponse->participants[i];
         fldOutStreamWriteUInt8(outStream, (uint8_t) participant->localIndex);
         errorCode = fldOutStreamWriteUInt8(outStream, (uint8_t) participant->id);
         if (errorCode < 0) {
@@ -56,26 +61,16 @@ static int writeConnectionIndexAndParticipantIds(FldOutStream* outStream, uint8_
         }
     }
 
-    return 0;
+    return errorCode;
 }
 
-/// Serialize a game join response for a previously received game join request.
-/// Typically used on the server.
-/// @param outStream out stream
-/// @param participantConnectionIndex the index of the participant connection
-/// @param participants participant info
-/// @param participantCount number of participants
-/// @return negative on error
-int nimbleSerializeServerOutGameJoinResponse(FldOutStream* outStream,
-                                             NimbleSerializeParticipantConnectionIndex participantConnectionIndex,
-                                             NimbleSerializeParticipantConnectionSecret participantConnectionSecret,
-                                             const NimbleSerializeParticipant* participants, size_t participantCount)
-{
-    nimbleSerializeWriteCommand(outStream, NimbleSerializeCmdJoinGameResponse, DEBUG_PREFIX);
 
-    int errorCode = writeConnectionIndexAndParticipantIds(outStream, participantConnectionIndex, participantConnectionSecret, participants,
-                                                          participantCount);
-    return errorCode;
+int nimbleSerializeServerOutConnectResponse(FldOutStream* outStream,
+                                             const NimbleSerializeConnectResponse* response)
+{
+    nimbleSerializeWriteCommand(outStream, NimbleSerializeCmdConnectResponse, DEBUG_PREFIX);
+
+    return fldOutStreamWriteUInt8(outStream, response->useDebugStreams ? 0x01 : 0x00);
 }
 
 /// Serializes an out of participant slot response
