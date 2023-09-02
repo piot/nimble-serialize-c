@@ -36,6 +36,8 @@ int nimbleSerializeClientOutGameJoin(FldOutStream* stream, const NimbleSerialize
     nimbleSerializeOutVersion(stream, &g_nimbleProtocolVersion);
     nimbleSerializeOutVersion(stream, &options->applicationVersion);
     nimbleSerializeOutNonce(stream, options->nonce);
+    fldOutStreamWriteUInt8(stream, options->connectionSecretIsProvided ? 0x01 : 0x00);
+    nimbleSerializeOutConnectionSecret(stream, options->connectionSecret);
     nimbleSerializeClientOutParticipantConnectionJoin(stream, options->players, options->playerCount);
     return 0;
 }

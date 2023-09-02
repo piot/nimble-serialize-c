@@ -28,6 +28,7 @@ int nimbleSerializeServerOutStepHeader(struct FldOutStream* outStream, uint32_t 
 
 int nimbleSerializeServerOutGameJoinResponse(struct FldOutStream* outStream,
                                              NimbleSerializeParticipantConnectionIndex connectionIndex,
+                                             NimbleSerializeParticipantConnectionSecret connectionSecret,
                                              const NimbleSerializeParticipant* participants, size_t participantCount);
 
 int nimbleSerializeServerOutGameJoinOutOfParticipantSlotsResponse(struct FldOutStream* outStream,

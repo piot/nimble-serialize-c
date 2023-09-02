@@ -5,16 +5,16 @@
 #include <flood/in_stream.h>
 #include <flood/out_stream.h>
 #include <nimble-serialize/serialize.h>
+
 #if defined CONFIGURATION_DEBUG
 #include <nimble-serialize/debug.h>
 #endif
 
 
-#if defined CONFIGURATION_DEBUG
 static const uint8_t NIMBLE_SERIALIZE_MARKER_CHANNEL_ID = 0x19;
 static const uint8_t NIMBLE_SERIALIZE_MARKER_STATE_ID = 0x9a;
 static const uint8_t NIMBLE_SERIALIZE_MARKER_NONCE_ID = 0xe2;
-#endif
+static const uint8_t NIMBLE_SERIALIZE_MARKER_CONNECTION_SECRET_ID = 0xe3;
 
 /// Writes a nonce to the octet stream
 /// @param stream out stream
@@ -22,9 +22,7 @@ static const uint8_t NIMBLE_SERIALIZE_MARKER_NONCE_ID = 0xe2;
 /// @return negative on error
 int nimbleSerializeOutNonce(struct FldOutStream* stream, NimbleSerializeNonce nonce)
 {
-#if defined CONFIGURATION_DEBUG
     fldOutStreamWriteMarker(stream, NIMBLE_SERIALIZE_MARKER_NONCE_ID);
-#endif
     return fldOutStreamWriteUInt64(stream, nonce);
 }
 
@@ -34,10 +32,29 @@ int nimbleSerializeOutNonce(struct FldOutStream* stream, NimbleSerializeNonce no
 /// @return negative on error
 int nimbleSerializeInNonce(struct FldInStream* stream, NimbleSerializeNonce* nonce)
 {
-#if defined CONFIGURATION_DEBUG
     fldInStreamCheckMarker(stream, NIMBLE_SERIALIZE_MARKER_NONCE_ID);
-#endif
     return fldInStreamReadUInt64(stream, nonce);
+}
+
+
+/// Writes a secret to the octet stream
+/// @param stream out stream
+/// @param secret nonce
+/// @return negative on error
+int nimbleSerializeOutConnectionSecret(struct FldOutStream* stream, NimbleSerializeParticipantConnectionSecret secret)
+{
+    fldOutStreamWriteMarker(stream, NIMBLE_SERIALIZE_MARKER_CONNECTION_SECRET_ID);
+    return fldOutStreamWriteUInt64(stream, secret);
+}
+
+/// Reads a secret from the octet stream
+/// @param stream out stream
+/// @param secret secret
+/// @return negative on error
+int nimbleSerializeInConnectionSecret(struct FldInStream* stream, NimbleSerializeParticipantConnectionSecret* secret)
+{
+    fldInStreamCheckMarker(stream, NIMBLE_SERIALIZE_MARKER_CONNECTION_SECRET_ID);
+    return fldInStreamReadUInt64(stream, secret);
 }
 
 /// Writes a channelId to the octet stream
@@ -47,9 +64,7 @@ int nimbleSerializeInNonce(struct FldInStream* stream, NimbleSerializeNonce* non
 int nimbleSerializeOutBlobStreamChannelId(struct FldOutStream* stream,
                                           const NimbleSerializeBlobStreamChannelId channelId)
 {
-#if defined CONFIGURATION_DEBUG
     fldOutStreamWriteMarker(stream, NIMBLE_SERIALIZE_MARKER_CHANNEL_ID);
-#endif
     return fldOutStreamWriteUInt32(stream, channelId);
 }
 
@@ -59,9 +74,7 @@ int nimbleSerializeOutBlobStreamChannelId(struct FldOutStream* stream,
 /// @return negative on error
 int nimbleSerializeInBlobStreamChannelId(struct FldInStream* stream, NimbleSerializeBlobStreamChannelId* channelId)
 {
-#if defined CONFIGURATION_DEBUG
     fldInStreamCheckMarker(stream, NIMBLE_SERIALIZE_MARKER_CHANNEL_ID);
-#endif
     return fldInStreamReadUInt32(stream, channelId);
 }
 
@@ -71,9 +84,7 @@ int nimbleSerializeInBlobStreamChannelId(struct FldInStream* stream, NimbleSeria
 /// @return negative on error
 int nimbleSerializeOutStateId(struct FldOutStream* stream, const NimbleSerializeStateId stateId)
 {
-#if defined CONFIGURATION_DEBUG
     fldOutStreamWriteMarker(stream, NIMBLE_SERIALIZE_MARKER_STATE_ID);
-#endif
     return fldOutStreamWriteUInt32(stream, stateId);
 }
 
@@ -83,9 +94,7 @@ int nimbleSerializeOutStateId(struct FldOutStream* stream, const NimbleSerialize
 /// @return negative on error
 int nimbleSerializeInStateId(struct FldInStream* stream, NimbleSerializeStateId* stateId)
 {
-#if defined CONFIGURATION_DEBUG
     fldInStreamCheckMarker(stream, NIMBLE_SERIALIZE_MARKER_STATE_ID);
-#endif
     return fldInStreamReadUInt32(stream, stateId);
 }
 

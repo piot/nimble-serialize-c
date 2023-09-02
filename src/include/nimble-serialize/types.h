@@ -12,6 +12,7 @@ typedef uint32_t NimbleSerializeBlobStreamChannelId;
 typedef uint32_t NimbleSerializeStateId;
 typedef uint8_t NimbleSerializeParticipantConnectionIndex;
 typedef uint64_t NimbleSerializeNonce;
+typedef uint64_t NimbleSerializeParticipantConnectionSecret;
 
 #define MAX_LOCAL_PLAYERS (4)
 

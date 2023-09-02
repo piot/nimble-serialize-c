@@ -30,6 +30,7 @@ int nimbleSerializeServerOutStepHeader(FldOutStream* outStream, uint32_t lastRec
 }
 
 static int writeConnectionIndexAndParticipantIds(FldOutStream* outStream, uint8_t participantConnectionIndex,
+                                                 NimbleSerializeParticipantConnectionSecret connectionSecret,
                                                  const NimbleSerializeParticipant* participants,
                                                  size_t participantCount)
 {
@@ -41,6 +42,8 @@ static int writeConnectionIndexAndParticipantIds(FldOutStream* outStream, uint8_
         CLOG_ERROR("participant count zero is not allowed")
         // return -44;
     }
+
+    nimbleSerializeOutConnectionSecret(outStream, connectionSecret);
 
     fldOutStreamWriteUInt8(outStream, (uint8_t) participantCount);
 
@@ -65,11 +68,12 @@ static int writeConnectionIndexAndParticipantIds(FldOutStream* outStream, uint8_
 /// @return negative on error
 int nimbleSerializeServerOutGameJoinResponse(FldOutStream* outStream,
                                              NimbleSerializeParticipantConnectionIndex participantConnectionIndex,
+                                             NimbleSerializeParticipantConnectionSecret participantConnectionSecret,
                                              const NimbleSerializeParticipant* participants, size_t participantCount)
 {
     nimbleSerializeWriteCommand(outStream, NimbleSerializeCmdJoinGameResponse, DEBUG_PREFIX);
 
-    int errorCode = writeConnectionIndexAndParticipantIds(outStream, participantConnectionIndex, participants,
+    int errorCode = writeConnectionIndexAndParticipantIds(outStream, participantConnectionIndex, participantConnectionSecret, participants,
                                                           participantCount);
     return errorCode;
 }

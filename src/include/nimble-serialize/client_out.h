@@ -22,6 +22,8 @@ typedef struct NimbleSerializeGameJoinOptions {
     NimbleSerializePlayerJoinOptions players[8];
     size_t playerCount;
     NimbleSerializeNonce nonce;
+    bool connectionSecretIsProvided;
+    NimbleSerializeParticipantConnectionSecret connectionSecret;
 } NimbleSerializeGameJoinOptions;
 
 int nimbleSerializeClientOutGameJoin(struct FldOutStream* stream, const NimbleSerializeGameJoinOptions* options);
