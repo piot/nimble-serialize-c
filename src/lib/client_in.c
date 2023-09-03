@@ -12,6 +12,7 @@
 int nimbleSerializeClientInConnectResponse(FldInStream* stream, NimbleSerializeConnectResponse* options)
 {
     uint8_t flags;
+
     fldInStreamReadUInt8(stream, &flags);
 
     options->useDebugStreams = flags & 0x01;
