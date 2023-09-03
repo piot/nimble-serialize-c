@@ -35,8 +35,8 @@ int nimbleSerializeClientInJoinGameResponse(FldInStream* inStream, NimbleSeriali
 
     response->participantCount = participantCount;
     if (response->participantCount == 0) {
-        CLOG_ERROR("participant count zero is not allowed")
-        // return -44;
+        CLOG_SOFT_ERROR("participant count zero is not allowed")
+        return -44;
     }
     for (size_t i = 0; i < participantCount; ++i) {
         NimbleSerializeJoinGameResponseParticipant* participant = &response->participants[i];
