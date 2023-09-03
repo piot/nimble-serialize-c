@@ -13,9 +13,11 @@
 struct FldOutStream;
 struct FldInStream;
 
-
 int nimbleSerializeOutNonce(struct FldOutStream* stream, NimbleSerializeNonce nonce);
 int nimbleSerializeInNonce(struct FldInStream* stream, NimbleSerializeNonce* nonce);
+
+int nimbleSerializeOutConnectionSecret(struct FldOutStream* stream, NimbleSerializeParticipantConnectionSecret secret);
+int nimbleSerializeInConnectionSecret(struct FldInStream* stream, NimbleSerializeParticipantConnectionSecret* secret);
 
 int nimbleSerializeOutBlobStreamChannelId(struct FldOutStream* stream,
                                           const NimbleSerializeBlobStreamChannelId channelId);

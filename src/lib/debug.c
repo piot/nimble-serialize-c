@@ -12,14 +12,24 @@
 /// @return return string representation of cmd
 const char* nimbleSerializeCmdToString(uint8_t cmd)
 {
-    static const char* lookup[] = {
-        "NOP",      "JoinGameRequest", "GameStep",         "GameStateRequest", "GameStateStatus", "not used",
-        "not used", "not used",        "GameStepResponse", "JoinGameResponse", "GameStatePart",   "GameStateResponse", "JoinGameResponseParticipantFull"
-    };
+    static const char* lookup[] = {"NOP",
+                                   "JoinGameRequest",
+                                   "GameStep",
+                                   "GameStateRequest",
+                                   "GameStateStatus",
+                                   "Connect Request",
+                                   "not used",
+                                   "not used",
+                                   "GameStepResponse",
+                                   "JoinGameResponse",
+                                   "GameStatePart",
+                                   "GameStateResponse",
+                                   "JoinGameResponseParticipantFull",
+                                   "ConnectResponse"};
 
     if (cmd >= sizeof(lookup) / sizeof(lookup[0])) {
         CLOG_ERROR("Unknown serialize command: %02X", cmd)
-        //return 0;
+        // return 0;
     }
 
     return lookup[cmd];
