@@ -12,16 +12,16 @@ NimbleSerializeVersion g_nimbleProtocolVersion = {0, 0, 2};
 #define COMMAND_DEBUG "ClientOut"
 
 static int nimbleSerializeClientOutParticipantConnectionJoin(FldOutStream* stream,
-                                                             const struct NimbleSerializePlayerJoinOptions* joinInfos,
-                                                             size_t localParticipantCount)
+                                                             const struct NimbleSerializeJoinGameRequestPlayer* players,
+                                                             size_t playerCount)
 {
-    if (localParticipantCount == 0) {
-        CLOG_ERROR("participant count must be greater than zero")
+    if (playerCount == 0) {
+        CLOG_ERROR("player count must be greater than zero")
     }
-    CLOG_VERBOSE("joining participant count %zu", localParticipantCount)
-    fldOutStreamWriteUInt8(stream, (uint8_t) localParticipantCount);
-    for (size_t i = 0; i < localParticipantCount; ++i) {
-        fldOutStreamWriteUInt8(stream, joinInfos[i].localIndex);
+    CLOG_VERBOSE("joining player count %zu", playerCount)
+    fldOutStreamWriteUInt8(stream, (uint8_t) playerCount);
+    for (size_t i = 0; i < playerCount; ++i) {
+        fldOutStreamWriteUInt8(stream, players[i].localIndex);
     }
 
     return 0;
@@ -29,29 +29,28 @@ static int nimbleSerializeClientOutParticipantConnectionJoin(FldOutStream* strea
 
 /// Write a connection request to the octet stream
 /// @param stream out stream
-/// @param options connect options
+/// @param request connect options
 /// @return negative on error
-int nimbleSerializeClientOutConnect(FldOutStream* stream, const NimbleSerializeConnectRequest* options)
+int nimbleSerializeClientOutConnectRequest(FldOutStream* stream, const NimbleSerializeConnectRequest* request)
 {
     nimbleSerializeWriteCommand(stream, NimbleSerializeCmdConnectRequest, COMMAND_DEBUG);
     nimbleSerializeOutVersion(stream, &g_nimbleProtocolVersion);
-    fldOutStreamWriteUInt8(stream, options->useDebugStreams);
-    nimbleSerializeOutVersion(stream, &options->applicationVersion);
-    return 0;
+    fldOutStreamWriteUInt8(stream, request->useDebugStreams);
+    return nimbleSerializeOutVersion(stream, &request->applicationVersion);
 }
 
 /// Writes a JoinGameRequest to the octet stream
 /// @param stream out stream
-/// @param options game join options
+/// @param request game join request
 /// @return negative on error
-int nimbleSerializeClientOutGameJoin(FldOutStream* stream, const NimbleSerializeGameJoinOptions* options)
+int nimbleSerializeClientOutJoinGameRequest(FldOutStream* stream, const NimbleSerializeJoinGameRequest* request)
 {
     nimbleSerializeWriteCommand(stream, NimbleSerializeCmdJoinGameRequest, COMMAND_DEBUG);
-    nimbleSerializeOutNonce(stream, options->nonce);
-    fldOutStreamWriteUInt8(stream, options->connectionSecretIsProvided ? 0x01 : 0x00);
-    if (options->connectionSecretIsProvided) {
-        nimbleSerializeOutConnectionSecret(stream, options->connectionSecret);
+    nimbleSerializeOutNonce(stream, request->nonce);
+    fldOutStreamWriteUInt8(stream, request->connectionSecretIsProvided ? 0x01 : 0x00);
+    if (request->connectionSecretIsProvided) {
+        nimbleSerializeOutConnectionSecret(stream, request->connectionSecret);
     }
-    nimbleSerializeClientOutParticipantConnectionJoin(stream, options->players, options->playerCount);
-    return 0;
+
+    return nimbleSerializeClientOutParticipantConnectionJoin(stream, request->players, request->playerCount);
 }

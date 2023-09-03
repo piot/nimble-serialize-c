@@ -6,12 +6,11 @@
 #define NIMBLE_SERIALIZE_SERVER_OUT_H
 
 #include <nimble-serialize/serialize.h>
+#include <stdbool.h>
 #include <stdint.h>
 #include <stdlib.h>
-#include <stdbool.h>
 
 struct FldOutStream;
-
 
 typedef struct SerializeGameState {
     uint32_t stepId;
@@ -26,10 +25,10 @@ int nimbleSerializeServerOutStepHeader(struct FldOutStream* outStream, uint32_t 
 int nimbleSerializeServerOutConnectResponse(struct FldOutStream* outStream,
                                             const NimbleSerializeConnectResponse* response);
 
-int nimbleSerializeServerOutGameJoinResponse(struct FldOutStream* outStream,
-                                             const NimbleSerializeGameResponse* options);
+int nimbleSerializeServerOutJoinGameResponse(struct FldOutStream* outStream,
+                                             const NimbleSerializeJoinGameResponse* response);
 
-int nimbleSerializeServerOutGameJoinOutOfParticipantSlotsResponse(struct FldOutStream* outStream,
+int nimbleSerializeServerOutJoinGameOutOfParticipantSlotsResponse(struct FldOutStream* outStream,
                                                                   NimbleSerializeNonce reqGameNonce);
 
 int nimbleSerializeServerOutGameStateResponse(struct FldOutStream* outStream, SerializeGameState outGameState,

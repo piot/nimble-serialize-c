@@ -8,7 +8,14 @@
 #include <nimble-serialize/server_in.h>
 #include <nimble-serialize/version.h>
 
-int nimbleSerializeServerInConnectRequest(FldInStream* stream, NimbleSerializeConnectRequest* options)
+/// Connect request sent from the client to the server
+/// It checks if the nimble protocol version and the application version is exactly the same
+/// The application must be 100% deterministic, so it is vital that everyone in the session
+/// is running an executable of the same version.
+/// @param stream stream to read from
+/// @param request the request
+/// @return negative on error
+int nimbleSerializeServerInConnectRequest(FldInStream* stream, NimbleSerializeConnectRequest* request)
 {
     NimbleSerializeVersion nimbleProtocolVersion;
 
@@ -25,61 +32,54 @@ int nimbleSerializeServerInConnectRequest(FldInStream* stream, NimbleSerializeCo
     uint8_t flags;
     fldInStreamReadUInt8(stream, &flags);
 
-    options->useDebugStreams = flags & 0x01;
+    request->useDebugStreams = flags & 0x01;
 
-    nimbleSerializeInVersion(stream, &options->applicationVersion);
-    return 0;
+    return nimbleSerializeInVersion(stream, &request->applicationVersion);
 }
 
-/*
-int nimbleSerializeClientOutGameJoin(FldOutStream* stream, const NimbleSerializeGameJoinOptions* options)
-{
-    nimbleSerializeWriteCommand(stream, NimbleSerializeCmdJoinGameRequest, COMMAND_DEBUG);
-    nimbleSerializeOutNonce(stream, options->nonce);
-    fldOutStreamWriteUInt8(stream, options->connectionSecretIsProvided ? 0x01 : 0x00);
-    nimbleSerializeOutConnectionSecret(stream, options->connectionSecret);
-    nimbleSerializeClientOutParticipantConnectionJoin(stream, options->players, options->playerCount);
-*/
-
-static int nimbleSerializeServerInParticipantConnectionJoin(FldInStream* stream,
-                                                            struct NimbleSerializePlayerJoinOptions* joinInfos, size_t* outPlayerCount)
+static int nimbleSerializeServerInJoinGameRequestPlayers(FldInStream* stream,
+                                                         struct NimbleSerializeJoinGameRequestPlayer* players,
+                                                         size_t* outPlayerCount)
 {
     uint8_t playerCount;
 
     fldInStreamReadUInt8(stream, &playerCount);
 
     if (playerCount == 0 || playerCount > 8) {
-        CLOG_SOFT_ERROR("illegal participant count")
+        CLOG_SOFT_ERROR("illegal player count")
         return -1;
     }
 
     for (size_t i = 0; i < playerCount; ++i) {
-        fldInStreamReadUInt8(stream, &joinInfos[i].localIndex);
+        fldInStreamReadUInt8(stream, &players[i].localIndex);
     }
 
     *outPlayerCount = playerCount;
 
-    CLOG_VERBOSE("read joining participant count %hhu", playerCount)
+    CLOG_VERBOSE("read joining player count %hhu", playerCount)
 
     return 0;
 }
 
-int nimbleSerializeServerInGameJoin(FldInStream* stream, NimbleSerializeGameJoinOptions* options)
+/// Reads join game request sent from the client to the server.
+/// @param stream to read from
+/// @param request filled in by the deserialization
+/// @return negative on error
+int nimbleSerializeServerInJoinGameRequest(FldInStream* stream, NimbleSerializeJoinGameRequest* request)
 {
-    NimbleSerializeNonce requestJoinNonce;
-    nimbleSerializeInNonce(stream, &requestJoinNonce);
+    nimbleSerializeInNonce(stream, &request->nonce);
 
     uint8_t masks = 0;
+
     fldInStreamReadUInt8(stream, &masks);
 
     bool secretIsProvided = masks & 0x01;
 
-    NimbleSerializeParticipantConnectionSecret previousSecret;
     if (secretIsProvided) {
-        nimbleSerializeInConnectionSecret(stream, &previousSecret);
+        nimbleSerializeInConnectionSecret(stream, &request->connectionSecret);
     } else {
-        previousSecret = 0;
+        request->connectionSecret = 0;
     }
 
-    return nimbleSerializeServerInParticipantConnectionJoin(stream, options->players, &options->playerCount);
+    return nimbleSerializeServerInJoinGameRequestPlayers(stream, request->players, &request->playerCount);
 }

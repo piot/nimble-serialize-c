@@ -5,8 +5,8 @@
 #ifndef NIMBLE_SERIALIZE_VERSION_H
 #define NIMBLE_SERIALIZE_VERSION_H
 
-#include <stdint.h>
 #include <stdbool.h>
+#include <stdint.h>
 
 typedef struct NimbleSerializeVersion {
     uint16_t major;

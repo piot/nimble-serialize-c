@@ -29,13 +29,12 @@ int nimbleSerializeServerOutStepHeader(FldOutStream* outStream, uint32_t lastRec
     return fldOutStreamWriteUInt32(outStream, lastReceivedStepIdFromClient);
 }
 
-
 /// Serialize a game join response for a previously received game join request.
 /// Typically used on the server.
 /// @param outStream out stream
 /// @return negative on error
-int nimbleSerializeServerOutGameJoinResponse(FldOutStream* outStream,
-                                             const NimbleSerializeGameResponse* gameResponse)
+int nimbleSerializeServerOutJoinGameResponse(FldOutStream* outStream,
+                                             const NimbleSerializeJoinGameResponse* gameResponse)
 {
     nimbleSerializeWriteCommand(outStream, NimbleSerializeCmdJoinGameResponse, DEBUG_PREFIX);
 
@@ -53,7 +52,7 @@ int nimbleSerializeServerOutGameJoinResponse(FldOutStream* outStream,
     fldOutStreamWriteUInt8(outStream, (uint8_t) gameResponse->participantCount);
 
     for (size_t i = 0; i < gameResponse->participantCount; ++i) {
-        const NimbleSerializeParticipant* participant = &gameResponse->participants[i];
+        const NimbleSerializeJoinGameResponseParticipant* participant = &gameResponse->participants[i];
         fldOutStreamWriteUInt8(outStream, (uint8_t) participant->localIndex);
         errorCode = fldOutStreamWriteUInt8(outStream, (uint8_t) participant->id);
         if (errorCode < 0) {
@@ -64,9 +63,7 @@ int nimbleSerializeServerOutGameJoinResponse(FldOutStream* outStream,
     return errorCode;
 }
 
-
-int nimbleSerializeServerOutConnectResponse(FldOutStream* outStream,
-                                             const NimbleSerializeConnectResponse* response)
+int nimbleSerializeServerOutConnectResponse(FldOutStream* outStream, const NimbleSerializeConnectResponse* response)
 {
     nimbleSerializeWriteCommand(outStream, NimbleSerializeCmdConnectResponse, DEBUG_PREFIX);
 
@@ -77,7 +74,7 @@ int nimbleSerializeServerOutConnectResponse(FldOutStream* outStream,
 /// @param outStream outstream
 /// @param reqGameNonce request join game nonce
 /// @return negative on error
-int nimbleSerializeServerOutGameJoinOutOfParticipantSlotsResponse(FldOutStream* outStream,
+int nimbleSerializeServerOutJoinGameOutOfParticipantSlotsResponse(FldOutStream* outStream,
                                                                   NimbleSerializeNonce reqGameNonce)
 {
     nimbleSerializeWriteCommand(outStream, NimbleSerializeCmdJoinGameOutOfParticipantSlotsResponse, DEBUG_PREFIX);

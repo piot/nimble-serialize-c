@@ -15,6 +15,8 @@ typedef uint8_t NimbleSerializeParticipantConnectionIndex;
 typedef uint64_t NimbleSerializeNonce;
 typedef uint64_t NimbleSerializeParticipantConnectionSecret;
 
+#define NIMBLE_SERIALIZE_MAX_LOCAL_PLAYERS (4)
+
 typedef struct NimbleSerializeConnectRequest {
     NimbleSerializeVersion applicationVersion;
     bool useDebugStreams;
@@ -24,30 +26,28 @@ typedef struct NimbleSerializeConnectResponse {
     bool useDebugStreams;
 } NimbleSerializeConnectResponse;
 
-typedef struct NimbleSerializePlayerJoinOptions {
+typedef struct NimbleSerializeJoinGameRequestPlayer {
     uint8_t localIndex;
-} NimbleSerializePlayerJoinOptions;
+} NimbleSerializeJoinGameRequestPlayer;
 
-typedef struct NimbleSerializeGameJoinOptions {
-    NimbleSerializePlayerJoinOptions players[8];
+typedef struct NimbleSerializeJoinGameRequest {
+    NimbleSerializeJoinGameRequestPlayer players[NIMBLE_SERIALIZE_MAX_LOCAL_PLAYERS];
     size_t playerCount;
     NimbleSerializeNonce nonce;
     bool connectionSecretIsProvided;
     NimbleSerializeParticipantConnectionSecret connectionSecret;
-} NimbleSerializeGameJoinOptions;
+} NimbleSerializeJoinGameRequest;
 
-typedef struct NimbleSerializeParticipant {
+typedef struct NimbleSerializeJoinGameResponseParticipant {
     size_t localIndex;
     size_t id;
-} NimbleSerializeParticipant;
+} NimbleSerializeJoinGameResponseParticipant;
 
-typedef struct NimbleSerializeGameResponse {
+typedef struct NimbleSerializeJoinGameResponse {
     NimbleSerializeParticipantConnectionIndex participantConnectionIndex;
     NimbleSerializeParticipantConnectionSecret participantConnectionSecret;
-    NimbleSerializeParticipant participants[8];
+    NimbleSerializeJoinGameResponseParticipant participants[NIMBLE_SERIALIZE_MAX_LOCAL_PLAYERS];
     size_t participantCount;
-} NimbleSerializeGameResponse;
-
-#define MAX_LOCAL_PLAYERS (4)
+} NimbleSerializeJoinGameResponse;
 
 #endif

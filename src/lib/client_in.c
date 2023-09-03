@@ -6,8 +6,8 @@
 #include <flood/in_stream.h>
 #include <nimble-serialize/client_in.h>
 #include <nimble-serialize/commands.h>
-#include <nimble-serialize/version.h>
 #include <nimble-serialize/serialize.h>
+#include <nimble-serialize/version.h>
 
 int nimbleSerializeClientInConnectResponse(FldInStream* stream, NimbleSerializeConnectResponse* options)
 {
@@ -19,13 +19,12 @@ int nimbleSerializeClientInConnectResponse(FldInStream* stream, NimbleSerializeC
     return 0;
 }
 
-int nimbleSerializeClientInGameJoinResponse(FldInStream* inStream, NimbleSerializeGameResponse* response)
+int nimbleSerializeClientInJoinGameResponse(FldInStream* inStream, NimbleSerializeJoinGameResponse* response)
 {
     int errorCode = fldInStreamReadUInt8(inStream, &response->participantConnectionIndex);
     if (errorCode < 0) {
         return errorCode;
     }
-
 
     nimbleSerializeInConnectionSecret(inStream, &response->participantConnectionSecret);
 
@@ -39,13 +38,13 @@ int nimbleSerializeClientInGameJoinResponse(FldInStream* inStream, NimbleSeriali
         // return -44;
     }
     for (size_t i = 0; i < participantCount; ++i) {
-        NimbleSerializeParticipant* participant = &response->participants[i];
+        NimbleSerializeJoinGameResponseParticipant* participant = &response->participants[i];
         uint8_t localIndex;
         fldInStreamReadUInt8(inStream, &localIndex);
         participant->localIndex = localIndex;
 
         uint8_t participantId;
-        errorCode = fldInStreamReadUInt8(inStream,  &participantId);
+        errorCode = fldInStreamReadUInt8(inStream, &participantId);
         if (errorCode < 0) {
             return errorCode;
         }

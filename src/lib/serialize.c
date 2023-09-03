@@ -10,7 +10,6 @@
 #include <nimble-serialize/debug.h>
 #endif
 
-
 static const uint8_t NIMBLE_SERIALIZE_MARKER_CHANNEL_ID = 0x19;
 static const uint8_t NIMBLE_SERIALIZE_MARKER_STATE_ID = 0x9a;
 static const uint8_t NIMBLE_SERIALIZE_MARKER_NONCE_ID = 0xe2;
@@ -35,7 +34,6 @@ int nimbleSerializeInNonce(struct FldInStream* stream, NimbleSerializeNonce* non
     fldInStreamCheckMarker(stream, NIMBLE_SERIALIZE_MARKER_NONCE_ID);
     return fldInStreamReadUInt64(stream, nonce);
 }
-
 
 /// Writes a secret to the octet stream
 /// @param stream out stream

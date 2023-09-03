@@ -13,7 +13,6 @@
 struct FldOutStream;
 struct FldInStream;
 
-
 int nimbleSerializeOutNonce(struct FldOutStream* stream, NimbleSerializeNonce nonce);
 int nimbleSerializeInNonce(struct FldInStream* stream, NimbleSerializeNonce* nonce);
 

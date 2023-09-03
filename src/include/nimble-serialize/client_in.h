@@ -6,14 +6,14 @@
 #define NIMBLE_SERIALIZE_CLIENT_IN_H
 
 #include <nimble-serialize/commands.h>
-#include <stdint.h>
-#include <stdlib.h>
 #include <nimble-serialize/types.h>
 #include <nimble-serialize/version.h>
+#include <stdint.h>
+#include <stdlib.h>
 
 struct FldInStream;
 
-int nimbleSerializeClientInConnectResponse(FldInStream* stream, NimbleSerializeConnectResponse* options);
-int nimbleSerializeClientInGameJoinResponse(FldInStream* stream, NimbleSerializeGameResponse* options);
+int nimbleSerializeClientInConnectResponse(FldInStream* stream, NimbleSerializeConnectResponse* response);
+int nimbleSerializeClientInJoinGameResponse(FldInStream* stream, NimbleSerializeJoinGameResponse* response);
 
 #endif

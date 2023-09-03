@@ -6,13 +6,13 @@
 #define NIMBLE_SERIALIZE_SERVER_IN_H
 
 #include <nimble-serialize/serialize.h>
+#include <stdbool.h>
 #include <stdint.h>
 #include <stdlib.h>
-#include <stdbool.h>
 
 struct FldInStream;
 
-int nimbleSerializeServerInConnectRequest(struct FldInStream* stream, NimbleSerializeConnectRequest* options);
-int nimbleSerializeServerInGameJoin(struct FldInStream* stream, NimbleSerializeGameJoinOptions* options);
+int nimbleSerializeServerInConnectRequest(struct FldInStream* stream, NimbleSerializeConnectRequest* request);
+int nimbleSerializeServerInJoinGameRequest(struct FldInStream* stream, NimbleSerializeJoinGameRequest* request);
 
 #endif

@@ -6,16 +6,14 @@
 #define NIMBLE_SERIALIZE_CLIENT_OUT_H
 
 #include <nimble-serialize/commands.h>
-#include <stdint.h>
-#include <stdlib.h>
 #include <nimble-serialize/types.h>
 #include <nimble-serialize/version.h>
+#include <stdint.h>
+#include <stdlib.h>
 
 struct FldOutStream;
 
-
-
-int nimbleSerializeClientOutGameJoin(struct FldOutStream* stream, const NimbleSerializeGameJoinOptions* options);
-int nimbleSerializeClientOutConnect(FldOutStream* stream, const NimbleSerializeConnectRequest* options);
+int nimbleSerializeClientOutJoinGameRequest(struct FldOutStream* stream, const NimbleSerializeJoinGameRequest* request);
+int nimbleSerializeClientOutConnectRequest(FldOutStream* stream, const NimbleSerializeConnectRequest* request);
 
 #endif
