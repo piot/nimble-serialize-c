@@ -4,9 +4,11 @@
  *--------------------------------------------------------------------------------------------*/
 #include <flood/in_stream.h>
 #include <flood/out_stream.h>
+#include <nimble-serialize/debug.h>
 #include <nimble-serialize/serialize.h>
+#include <clog/clog.h>
 
-#if defined CONFIGURATION_DEBUG
+#if defined CLOG_LOG_ENABLED
 #include <nimble-serialize/debug.h>
 #endif
 
@@ -99,9 +101,14 @@ int nimbleSerializeInStateId(struct FldInStream* stream, NimbleSerializeStateId*
 /// Writes a nimble command to the octet stream
 /// @param outStream out stream
 /// @param cmd nimble command
-/// @param prefix debug prefix
-void nimbleSerializeWriteCommand(struct FldOutStream* outStream, uint8_t cmd, const char* prefix)
+/// @param log log target
+void nimbleSerializeWriteCommand(struct FldOutStream* outStream, uint8_t cmd, Clog* log)
 {
-    (void) prefix;
+#if defined CLOG_LOG_ENABLED
+    CLOG_C_VERBOSE(log, "serialize cmd:%s", nimbleSerializeCmdToString(cmd))
+#else
+    (void) log;
+#endif
+
     fldOutStreamWriteUInt8(outStream, cmd);
 }

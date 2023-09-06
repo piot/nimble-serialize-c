@@ -56,7 +56,7 @@ static int nimbleSerializeServerInJoinGameRequestPlayers(FldInStream* stream,
 
     *outPlayerCount = playerCount;
 
-    CLOG_VERBOSE("read joining player count %hhu", playerCount)
+    CLOG_VERBOSE("server read joining player count %hhu", playerCount)
 
     return 0;
 }

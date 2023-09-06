@@ -11,6 +11,7 @@
 #include <stdlib.h>
 
 struct FldOutStream;
+struct Clog;
 
 typedef struct SerializeGameState {
     uint32_t stepId;
@@ -20,19 +21,19 @@ typedef struct SerializeGameState {
 
 int nimbleSerializeServerOutStepHeader(struct FldOutStream* outStream, uint32_t lastReceivedFromRemote,
                                        size_t connectionSpecificBufferCount, int8_t deltaAgainstAuthoritativeBuffer,
-                                       uint16_t monotonicTimeLowerBitsMs);
+                                       uint16_t monotonicTimeLowerBitsMs, struct Clog* log);
 
 int nimbleSerializeServerOutConnectResponse(struct FldOutStream* outStream,
-                                            const NimbleSerializeConnectResponse* response);
+                                            const NimbleSerializeConnectResponse* response, struct Clog* log);
 
 int nimbleSerializeServerOutJoinGameResponse(struct FldOutStream* outStream,
-                                             const NimbleSerializeJoinGameResponse* response);
+                                             const NimbleSerializeJoinGameResponse* response, struct Clog* log);
 
 int nimbleSerializeServerOutJoinGameOutOfParticipantSlotsResponse(struct FldOutStream* outStream,
-                                                                  NimbleSerializeNonce reqGameNonce);
+                                                                  NimbleSerializeNonce reqGameNonce, struct Clog* log);
 
 int nimbleSerializeServerOutGameStateResponse(struct FldOutStream* outStream, SerializeGameState outGameState,
                                               uint8_t clientRequestId,
-                                              NimbleSerializeBlobStreamChannelId blobStreamChannelId);
+                                              NimbleSerializeBlobStreamChannelId blobStreamChannelId, struct Clog* log);
 
 #endif

@@ -7,7 +7,6 @@
 #include <nimble-serialize/commands.h>
 #include <nimble-serialize/server_out.h>
 
-#define DEBUG_PREFIX "ServerOut"
 
 /// Writes a Step (Human Player Input) to an octet stream.
 /// Typically used on the server.
@@ -20,9 +19,9 @@
 /// @return negative on error
 int nimbleSerializeServerOutStepHeader(FldOutStream* outStream, uint32_t lastReceivedStepIdFromClient,
                                        size_t connectionSpecificBufferCount, int8_t deltaAgainstAuthoritativeBuffer,
-                                       uint16_t monotonicShortMs)
+                                       uint16_t monotonicShortMs, Clog* log)
 {
-    nimbleSerializeWriteCommand(outStream, NimbleSerializeCmdGameStepResponse, DEBUG_PREFIX);
+    nimbleSerializeWriteCommand(outStream, NimbleSerializeCmdGameStepResponse, log);
     fldOutStreamWriteUInt8(outStream, (uint8_t) connectionSpecificBufferCount);
     fldOutStreamWriteInt8(outStream, deltaAgainstAuthoritativeBuffer);
     fldOutStreamWriteUInt16(outStream, monotonicShortMs);
@@ -34,9 +33,9 @@ int nimbleSerializeServerOutStepHeader(FldOutStream* outStream, uint32_t lastRec
 /// @param outStream out stream
 /// @return negative on error
 int nimbleSerializeServerOutJoinGameResponse(FldOutStream* outStream,
-                                             const NimbleSerializeJoinGameResponse* gameResponse)
+                                             const NimbleSerializeJoinGameResponse* gameResponse, Clog* log)
 {
-    nimbleSerializeWriteCommand(outStream, NimbleSerializeCmdJoinGameResponse, DEBUG_PREFIX);
+    nimbleSerializeWriteCommand(outStream, NimbleSerializeCmdJoinGameResponse, log);
 
     int errorCode = fldOutStreamWriteUInt8(outStream, gameResponse->participantConnectionIndex);
     if (errorCode < 0) {
@@ -63,9 +62,9 @@ int nimbleSerializeServerOutJoinGameResponse(FldOutStream* outStream,
     return errorCode;
 }
 
-int nimbleSerializeServerOutConnectResponse(FldOutStream* outStream, const NimbleSerializeConnectResponse* response)
+int nimbleSerializeServerOutConnectResponse(FldOutStream* outStream, const NimbleSerializeConnectResponse* response, Clog* log)
 {
-    nimbleSerializeWriteCommand(outStream, NimbleSerializeCmdConnectResponse, DEBUG_PREFIX);
+    nimbleSerializeWriteCommand(outStream, NimbleSerializeCmdConnectResponse, log);
 
     return fldOutStreamWriteUInt8(outStream, response->useDebugStreams ? 0x01 : 0x00);
 }
@@ -75,9 +74,9 @@ int nimbleSerializeServerOutConnectResponse(FldOutStream* outStream, const Nimbl
 /// @param reqGameNonce request join game nonce
 /// @return negative on error
 int nimbleSerializeServerOutJoinGameOutOfParticipantSlotsResponse(FldOutStream* outStream,
-                                                                  NimbleSerializeNonce reqGameNonce)
+                                                                  NimbleSerializeNonce reqGameNonce, Clog* log)
 {
-    nimbleSerializeWriteCommand(outStream, NimbleSerializeCmdJoinGameOutOfParticipantSlotsResponse, DEBUG_PREFIX);
+    nimbleSerializeWriteCommand(outStream, NimbleSerializeCmdJoinGameOutOfParticipantSlotsResponse, log);
 
     int errorCode = nimbleSerializeOutNonce(outStream, reqGameNonce);
 
@@ -93,12 +92,12 @@ int nimbleSerializeServerOutJoinGameOutOfParticipantSlotsResponse(FldOutStream* 
 /// @return negative on error
 int nimbleSerializeServerOutGameStateResponse(FldOutStream* outStream, SerializeGameState outGameState,
                                               uint8_t clientRequestId,
-                                              NimbleSerializeBlobStreamChannelId blobStreamChannelId)
+                                              NimbleSerializeBlobStreamChannelId blobStreamChannelId, Clog* log)
 {
-    nimbleSerializeWriteCommand(outStream, NimbleSerializeCmdGameStateResponse, "ServerOut");
+    nimbleSerializeWriteCommand(outStream, NimbleSerializeCmdGameStateResponse, log);
     fldOutStreamWriteUInt8(outStream, clientRequestId);
     nimbleSerializeOutStateId(outStream, outGameState.stepId);
-    CLOG_VERBOSE("sending octetCount %zu", outGameState.gameStateOctetCount)
+    CLOG_C_VERBOSE(log, "sending octetCount %zu", outGameState.gameStateOctetCount)
     fldOutStreamWriteUInt32(outStream, (uint32_t) outGameState.gameStateOctetCount);
     return nimbleSerializeOutBlobStreamChannelId(outStream, blobStreamChannelId);
 }

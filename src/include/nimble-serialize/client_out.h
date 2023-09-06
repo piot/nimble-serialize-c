@@ -13,7 +13,7 @@
 
 struct FldOutStream;
 
-int nimbleSerializeClientOutJoinGameRequest(struct FldOutStream* stream, const NimbleSerializeJoinGameRequest* request);
-int nimbleSerializeClientOutConnectRequest(FldOutStream* stream, const NimbleSerializeConnectRequest* request);
+int nimbleSerializeClientOutJoinGameRequest(struct FldOutStream* stream, const NimbleSerializeJoinGameRequest* request, Clog* log);
+int nimbleSerializeClientOutConnectRequest(FldOutStream* stream, const NimbleSerializeConnectRequest* request, Clog* log);
 
 #endif

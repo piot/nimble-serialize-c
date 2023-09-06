@@ -12,6 +12,7 @@
 
 struct FldOutStream;
 struct FldInStream;
+struct Clog;
 
 int nimbleSerializeOutNonce(struct FldOutStream* stream, NimbleSerializeNonce nonce);
 int nimbleSerializeInNonce(struct FldInStream* stream, NimbleSerializeNonce* nonce);
@@ -26,6 +27,6 @@ int nimbleSerializeInBlobStreamChannelId(struct FldInStream* stream, NimbleSeria
 int nimbleSerializeOutStateId(struct FldOutStream* stream, const NimbleSerializeStateId stateId);
 int nimbleSerializeInStateId(struct FldInStream* stream, NimbleSerializeStateId* stateId);
 
-void nimbleSerializeWriteCommand(struct FldOutStream* outStream, uint8_t cmd, const char* prefix);
+void nimbleSerializeWriteCommand(struct FldOutStream* outStream, uint8_t cmd, struct Clog* log);
 
 #endif
