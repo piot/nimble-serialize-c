@@ -46,7 +46,10 @@ static int nimbleSerializeServerInJoinGameRequestPlayers(FldInStream* stream,
     fldInStreamReadUInt8(stream, &playerCount);
 
     if (playerCount == 0 || playerCount > 8) {
-        CLOG_SOFT_ERROR("illegal player count")
+        CLOG_SOFT_ERROR("illegal player count %hhu in join game request."
+                        "local players are usually 1-2, and maybe up to 4 in splitscreen.",
+                        playerCount)
+        *outPlayerCount = 0;
         return -1;
     }
 
@@ -73,9 +76,9 @@ int nimbleSerializeServerInJoinGameRequest(FldInStream* stream, NimbleSerializeJ
 
     fldInStreamReadUInt8(stream, &masks);
 
-    bool secretIsProvided = masks & 0x01;
+    request->connectionSecretIsProvided = masks & 0x01;
 
-    if (secretIsProvided) {
+    if (request->connectionSecretIsProvided) {
         nimbleSerializeInConnectionSecret(stream, &request->connectionSecret);
     } else {
         request->connectionSecret = 0;
