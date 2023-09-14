@@ -7,7 +7,7 @@
 #include <nimble-serialize/client_out.h>
 #include <nimble-serialize/serialize.h>
 
-NimbleSerializeVersion g_nimbleProtocolVersion = {0, 0, 2};
+NimbleSerializeVersion g_nimbleProtocolVersion = {0, 0, 3};
 
 static int nimbleSerializeClientOutParticipantConnectionJoin(FldOutStream* stream,
                                                              const struct NimbleSerializeJoinGameRequestPlayer* players,
