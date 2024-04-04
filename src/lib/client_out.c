@@ -6,6 +6,7 @@
 #include <flood/out_stream.h>
 #include <nimble-serialize/client_out.h>
 #include <nimble-serialize/serialize.h>
+#include <inttypes.h>
 
 NimbleSerializeVersion g_nimbleProtocolVersion = {0, 0, 3};
 
@@ -49,13 +50,17 @@ int nimbleSerializeClientOutJoinGameRequest(FldOutStream* stream, const NimbleSe
     nimbleSerializeOutNonce(stream, request->nonce);
     fldOutStreamWriteUInt8(stream, (uint8_t) request->joinGameType);
 
+    CLOG_C_DEBUG(log, "join game request type: %d", request->joinGameType)
+
     switch (request->joinGameType) {
         case NimbleSerializeJoinGameTypeNoSecret:
             break;
         case NimbleSerializeJoinGameTypeSecret:
+            CLOG_C_DEBUG(log, "join game request secret id: %" PRIX64, request->connectionSecret)
             nimbleSerializeOutConnectionSecret(stream, request->connectionSecret);
             break;
         case NimbleSerializeJoinGameTypeHostMigrationParticipantId:
+            CLOG_C_DEBUG(log, "join game request host migration participant id: %hhu", request->participantId)
             nimbleSerializeOutParticipantId(stream, request->participantId);
             break;
     }
