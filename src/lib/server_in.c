@@ -72,16 +72,21 @@ int nimbleSerializeServerInJoinGameRequest(FldInStream* stream, NimbleSerializeJ
 {
     nimbleSerializeInNonce(stream, &request->nonce);
 
-    uint8_t masks = 0;
+    uint8_t joinGameType = 0;
 
-    fldInStreamReadUInt8(stream, &masks);
+    fldInStreamReadUInt8(stream, &joinGameType);
 
-    request->connectionSecretIsProvided = masks & 0x01;
+    request->joinGameType = (NimbleSerializeJoinGameType) joinGameType;
 
-    if (request->connectionSecretIsProvided) {
-        nimbleSerializeInConnectionSecret(stream, &request->connectionSecret);
-    } else {
-        request->connectionSecret = 0;
+    switch (request->joinGameType) {
+        case NimbleSerializeJoinGameTypeNoSecret:
+            break;
+        case NimbleSerializeJoinGameTypeSecret:
+            nimbleSerializeInConnectionSecret(stream, &request->connectionSecret);
+            break;
+        case NimbleSerializeJoinGameTypeHostMigrationParticipantId:
+            nimbleSerializeInParticipantId(stream, &request->participantId);
+            break;
     }
 
     return nimbleSerializeServerInJoinGameRequestPlayers(stream, request->players, &request->playerCount);

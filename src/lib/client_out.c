@@ -47,9 +47,17 @@ int nimbleSerializeClientOutJoinGameRequest(FldOutStream* stream, const NimbleSe
 {
     nimbleSerializeWriteCommand(stream, NimbleSerializeCmdJoinGameRequest, log);
     nimbleSerializeOutNonce(stream, request->nonce);
-    fldOutStreamWriteUInt8(stream, request->connectionSecretIsProvided ? 0x01 : 0x00);
-    if (request->connectionSecretIsProvided) {
-        nimbleSerializeOutConnectionSecret(stream, request->connectionSecret);
+    fldOutStreamWriteUInt8(stream, (uint8_t) request->joinGameType);
+
+    switch (request->joinGameType) {
+        case NimbleSerializeJoinGameTypeNoSecret:
+            break;
+        case NimbleSerializeJoinGameTypeSecret:
+            nimbleSerializeOutConnectionSecret(stream, request->connectionSecret);
+            break;
+        case NimbleSerializeJoinGameTypeHostMigrationParticipantId:
+            nimbleSerializeOutParticipantId(stream, request->participantId);
+            break;
     }
 
     return nimbleSerializeClientOutParticipantConnectionJoin(stream, request->players, request->playerCount, log);

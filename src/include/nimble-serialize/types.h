@@ -12,6 +12,7 @@
 typedef uint32_t NimbleSerializeBlobStreamChannelId;
 typedef uint32_t NimbleSerializeStateId;
 typedef uint8_t NimbleSerializeParticipantConnectionIndex;
+typedef uint8_t NimbleSerializeParticipantId;
 typedef uint64_t NimbleSerializeNonce;
 typedef uint64_t NimbleSerializeParticipantConnectionSecret;
 
@@ -30,17 +31,24 @@ typedef struct NimbleSerializeJoinGameRequestPlayer {
     uint8_t localIndex;
 } NimbleSerializeJoinGameRequestPlayer;
 
+typedef enum NimbleSerializeJoinGameType {
+    NimbleSerializeJoinGameTypeNoSecret,
+    NimbleSerializeJoinGameTypeSecret,
+    NimbleSerializeJoinGameTypeHostMigrationParticipantId
+} NimbleSerializeJoinGameType;
+
 typedef struct NimbleSerializeJoinGameRequest {
     NimbleSerializeJoinGameRequestPlayer players[NIMBLE_SERIALIZE_MAX_LOCAL_PLAYERS];
     size_t playerCount;
     NimbleSerializeNonce nonce;
-    bool connectionSecretIsProvided;
+    NimbleSerializeJoinGameType joinGameType;
     NimbleSerializeParticipantConnectionSecret connectionSecret;
+    NimbleSerializeParticipantId participantId; // TODO: Only works for one participant per connection
 } NimbleSerializeJoinGameRequest;
 
 typedef struct NimbleSerializeJoinGameResponseParticipant {
     size_t localIndex;
-    size_t id;
+    NimbleSerializeParticipantId id;
 } NimbleSerializeJoinGameResponseParticipant;
 
 typedef struct NimbleSerializeJoinGameResponse {

@@ -2,11 +2,11 @@
  *  Copyright (c) Peter Bjorklund. All rights reserved.
  *  Licensed under the MIT License. See LICENSE in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
+#include <clog/clog.h>
 #include <flood/in_stream.h>
 #include <flood/out_stream.h>
 #include <nimble-serialize/debug.h>
 #include <nimble-serialize/serialize.h>
-#include <clog/clog.h>
 
 #if defined CLOG_LOG_ENABLED
 #include <nimble-serialize/debug.h>
@@ -16,6 +16,7 @@ static const uint8_t NIMBLE_SERIALIZE_MARKER_CHANNEL_ID = 0x19;
 static const uint8_t NIMBLE_SERIALIZE_MARKER_STATE_ID = 0x9a;
 static const uint8_t NIMBLE_SERIALIZE_MARKER_NONCE_ID = 0xe2;
 static const uint8_t NIMBLE_SERIALIZE_MARKER_CONNECTION_SECRET_ID = 0xe3;
+static const uint8_t NIMBLE_SERIALIZE_MARKER_PARTICIPANT_ID = 0x2d;
 
 /// Writes a nonce to the octet stream
 /// @param stream out stream
@@ -55,6 +56,26 @@ int nimbleSerializeInConnectionSecret(struct FldInStream* stream, NimbleSerializ
 {
     fldInStreamCheckMarker(stream, NIMBLE_SERIALIZE_MARKER_CONNECTION_SECRET_ID);
     return fldInStreamReadUInt64(stream, secret);
+}
+
+/// Writes a participantId to the octet stream
+/// @param stream out stream
+/// @param participantId nonce
+/// @return negative on error
+int nimbleSerializeOutParticipantId(struct FldOutStream* stream, NimbleSerializeParticipantId participantId)
+{
+    fldOutStreamWriteMarker(stream, NIMBLE_SERIALIZE_MARKER_PARTICIPANT_ID);
+    return fldOutStreamWriteUInt8(stream, participantId);
+}
+
+/// Reads a participantId from the octet stream
+/// @param stream out stream
+/// @param participantId participantId
+/// @return negative on error
+int nimbleSerializeInParticipantId(struct FldInStream* stream, NimbleSerializeParticipantId* participantId)
+{
+    fldInStreamCheckMarker(stream, NIMBLE_SERIALIZE_MARKER_PARTICIPANT_ID);
+    return fldInStreamReadUInt8(stream, participantId);
 }
 
 /// Writes a channelId to the octet stream

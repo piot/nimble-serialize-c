@@ -20,6 +20,9 @@ int nimbleSerializeInNonce(struct FldInStream* stream, NimbleSerializeNonce* non
 int nimbleSerializeOutConnectionSecret(struct FldOutStream* stream, NimbleSerializeParticipantConnectionSecret secret);
 int nimbleSerializeInConnectionSecret(struct FldInStream* stream, NimbleSerializeParticipantConnectionSecret* secret);
 
+int nimbleSerializeOutParticipantId(struct FldOutStream* stream, NimbleSerializeParticipantId participantId);
+int nimbleSerializeInParticipantId(struct FldInStream* stream, NimbleSerializeParticipantId* participantId);
+
 int nimbleSerializeOutBlobStreamChannelId(struct FldOutStream* stream,
                                           const NimbleSerializeBlobStreamChannelId channelId);
 int nimbleSerializeInBlobStreamChannelId(struct FldInStream* stream, NimbleSerializeBlobStreamChannelId* channelId);
