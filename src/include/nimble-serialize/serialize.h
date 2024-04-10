@@ -17,6 +17,13 @@ struct Clog;
 int nimbleSerializeOutNonce(struct FldOutStream* stream, NimbleSerializeNonce nonce);
 int nimbleSerializeInNonce(struct FldInStream* stream, NimbleSerializeNonce* nonce);
 
+int nimbleSerializeOutConnectionId(struct FldOutStream* stream, NimbleSerializeConnectionId connectionId);
+int nimbleSerializeInConnectionId(struct FldInStream* stream, NimbleSerializeConnectionId* connectionId);
+
+int nimbleSerializeOutConnectSecret(struct FldOutStream* stream, NimbleSerializeConnectionSecret connectSecret);
+int nimbleSerializeInConnectSecret(struct FldInStream* stream, NimbleSerializeConnectionSecret* connectSecret);
+
+
 int nimbleSerializeOutConnectionSecret(struct FldOutStream* stream, NimbleSerializeParticipantConnectionSecret secret);
 int nimbleSerializeInConnectionSecret(struct FldInStream* stream, NimbleSerializeParticipantConnectionSecret* secret);
 

@@ -15,16 +15,22 @@ typedef uint8_t NimbleSerializeParticipantConnectionIndex;
 typedef uint8_t NimbleSerializeParticipantId;
 typedef uint64_t NimbleSerializeNonce;
 typedef uint64_t NimbleSerializeParticipantConnectionSecret;
+typedef uint8_t NimbleSerializeConnectionId;
+typedef uint64_t NimbleSerializeConnectionSecret;
 
 #define NIMBLE_SERIALIZE_MAX_LOCAL_PLAYERS (4)
 
 typedef struct NimbleSerializeConnectRequest {
     NimbleSerializeVersion applicationVersion;
+    NimbleSerializeNonce nonce;
     bool useDebugStreams;
 } NimbleSerializeConnectRequest;
 
 typedef struct NimbleSerializeConnectResponse {
     bool useDebugStreams;
+    NimbleSerializeNonce responseToNonce;
+    NimbleSerializeConnectionId connectionId;
+    NimbleSerializeConnectionSecret connectionSecret; // TODO: Exchange it in a secure way
 } NimbleSerializeConnectResponse;
 
 typedef struct NimbleSerializeJoinGameRequestPlayer {
