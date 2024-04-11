@@ -17,7 +17,7 @@ int nimbleSerializeClientInConnectResponse(FldInStream* stream, NimbleSerializeC
 
     nimbleSerializeInNonce(stream, &options->responseToNonce);
     nimbleSerializeInConnectionId(stream, &options->connectionId);
-    return nimbleSerializeInConnectionSecret(stream, &options->connectionSecret);
+    return nimbleSerializeInConnectSecret(stream, &options->connectionSecret);
 }
 
 int nimbleSerializeClientInJoinGameResponse(FldInStream* inStream, NimbleSerializeJoinGameResponse* response)
