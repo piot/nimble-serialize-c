@@ -7,7 +7,6 @@
 #include <nimble-serialize/commands.h>
 #include <nimble-serialize/server_out.h>
 
-
 /// Writes a Step (Human Player Input) to an octet stream.
 /// Typically used on the server.
 /// @param outStream the target octet stream.
@@ -18,7 +17,8 @@
 /// buffer.
 /// @return negative on error
 int nimbleSerializeServerOutStepHeader(FldOutStream* outStream, uint32_t lastReceivedStepIdFromClient,
-                                       size_t connectionSpecificBufferCount, int8_t deltaAgainstAuthoritativeBuffer, Clog* log)
+                                       size_t connectionSpecificBufferCount, int8_t deltaAgainstAuthoritativeBuffer,
+                                       Clog* log)
 {
     nimbleSerializeWriteCommand(outStream, NimbleSerializeCmdGameStepResponse, log);
     fldOutStreamWriteUInt8(outStream, (uint8_t) connectionSpecificBufferCount);
@@ -60,11 +60,16 @@ int nimbleSerializeServerOutJoinGameResponse(FldOutStream* outStream,
     return errorCode;
 }
 
-int nimbleSerializeServerOutConnectResponse(FldOutStream* outStream, const NimbleSerializeConnectResponse* response, Clog* log)
+int nimbleSerializeServerOutConnectResponse(FldOutStream* outStream, const NimbleSerializeConnectResponse* response,
+                                            Clog* log)
 {
     nimbleSerializeWriteCommand(outStream, NimbleSerializeCmdConnectResponse, log);
 
-    return fldOutStreamWriteUInt8(outStream, response->useDebugStreams ? 0x01 : 0x00);
+    fldOutStreamWriteUInt8(outStream, response->useDebugStreams ? 0x01 : 0x00);
+
+    nimbleSerializeOutNonce(outStream, response->responseToNonce);
+    nimbleSerializeOutConnectionId(outStream, response->connectionId);
+    return nimbleSerializeOutConnectSecret(outStream, response->connectionSecret);
 }
 
 /// Serializes an out of participant slot response

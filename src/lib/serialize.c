@@ -16,7 +16,9 @@ static const uint8_t NIMBLE_SERIALIZE_MARKER_CHANNEL_ID = 0x19;
 static const uint8_t NIMBLE_SERIALIZE_MARKER_STATE_ID = 0x9a;
 static const uint8_t NIMBLE_SERIALIZE_MARKER_NONCE_ID = 0xe2;
 static const uint8_t NIMBLE_SERIALIZE_MARKER_CONNECTION_SECRET_ID = 0xe3;
+static const uint8_t NIMBLE_SERIALIZE_MARKER_CONNECT_SECRET_ID = 0x65;
 static const uint8_t NIMBLE_SERIALIZE_MARKER_PARTICIPANT_ID = 0x2d;
+static const uint8_t NIMBLE_SERIALIZE_MARKER_CONNECTION_ID = 0xae;
 
 /// Writes a nonce to the octet stream
 /// @param stream out stream
@@ -38,6 +40,26 @@ int nimbleSerializeInNonce(struct FldInStream* stream, NimbleSerializeNonce* non
     return fldInStreamReadUInt64(stream, nonce);
 }
 
+/// Writes a connectionId to the octet stream
+/// @param stream out stream
+/// @param connectionId connectionId
+/// @return negative on error
+int nimbleSerializeOutConnectionId(struct FldOutStream* stream, NimbleSerializeConnectionId connectionId)
+{
+    fldOutStreamWriteMarker(stream, NIMBLE_SERIALIZE_MARKER_CONNECTION_ID);
+    return fldOutStreamWriteUInt8(stream, connectionId);
+}
+
+/// Reads a connectionId from the octet stream
+/// @param stream out stream
+/// @param connectionId connectionId
+/// @return negative on error
+int nimbleSerializeInConnectionId(struct FldInStream* stream, NimbleSerializeConnectionId* connectionId)
+{
+    fldInStreamCheckMarker(stream, NIMBLE_SERIALIZE_MARKER_CONNECTION_ID);
+    return fldInStreamReadUInt8(stream, connectionId);
+}
+
 /// Writes a secret to the octet stream
 /// @param stream out stream
 /// @param secret nonce
@@ -55,6 +77,27 @@ int nimbleSerializeOutConnectionSecret(struct FldOutStream* stream, NimbleSerial
 int nimbleSerializeInConnectionSecret(struct FldInStream* stream, NimbleSerializeParticipantConnectionSecret* secret)
 {
     fldInStreamCheckMarker(stream, NIMBLE_SERIALIZE_MARKER_CONNECTION_SECRET_ID);
+    return fldInStreamReadUInt64(stream, secret);
+}
+
+
+/// Writes a secret to the octet stream
+/// @param stream out stream
+/// @param secret nonce
+/// @return negative on error
+int nimbleSerializeOutConnectSecret(struct FldOutStream* stream, NimbleSerializeConnectionSecret secret)
+{
+    fldOutStreamWriteMarker(stream, NIMBLE_SERIALIZE_MARKER_CONNECT_SECRET_ID);
+    return fldOutStreamWriteUInt64(stream, secret);
+}
+
+/// Reads a secret from the octet stream
+/// @param stream out stream
+/// @param secret secret
+/// @return negative on error
+int nimbleSerializeInConnectSecret(struct FldInStream* stream, NimbleSerializeConnectionSecret* secret)
+{
+    fldInStreamCheckMarker(stream, NIMBLE_SERIALIZE_MARKER_CONNECT_SECRET_ID);
     return fldInStreamReadUInt64(stream, secret);
 }
 

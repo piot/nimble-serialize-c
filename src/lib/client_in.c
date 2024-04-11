@@ -5,9 +5,7 @@
 #include <clog/clog.h>
 #include <flood/in_stream.h>
 #include <nimble-serialize/client_in.h>
-#include <nimble-serialize/commands.h>
 #include <nimble-serialize/serialize.h>
-#include <nimble-serialize/version.h>
 
 int nimbleSerializeClientInConnectResponse(FldInStream* stream, NimbleSerializeConnectResponse* options)
 {
@@ -17,7 +15,9 @@ int nimbleSerializeClientInConnectResponse(FldInStream* stream, NimbleSerializeC
 
     options->useDebugStreams = flags & 0x01;
 
-    return 0;
+    nimbleSerializeInNonce(stream, &options->responseToNonce);
+    nimbleSerializeInConnectionId(stream, &options->connectionId);
+    return nimbleSerializeInConnectSecret(stream, &options->connectionSecret);
 }
 
 int nimbleSerializeClientInJoinGameResponse(FldInStream* inStream, NimbleSerializeJoinGameResponse* response)
