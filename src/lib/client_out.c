@@ -50,7 +50,7 @@ int nimbleSerializeClientOutJoinGameRequest(FldOutStream* stream, const NimbleSe
     nimbleSerializeOutNonce(stream, request->nonce);
     fldOutStreamWriteUInt8(stream, (uint8_t) request->joinGameType);
 
-    CLOG_C_DEBUG(log, "join game request type: %d", request->joinGameType)
+    CLOG_C_DEBUG(log, "join game request type: %u", request->joinGameType)
 
     switch (request->joinGameType) {
         case NimbleSerializeJoinGameTypeNoSecret:
