@@ -34,7 +34,9 @@ int nimbleSerializeServerInConnectRequest(FldInStream* stream, NimbleSerializeCo
 
     request->useDebugStreams = flags & 0x01;
 
-    return nimbleSerializeInVersion(stream, &request->applicationVersion);
+    nimbleSerializeInVersion(stream, &request->applicationVersion);
+
+    return nimbleSerializeInNonce(stream, &request->nonce);
 }
 
 static int nimbleSerializeServerInJoinGameRequestPlayers(FldInStream* stream,

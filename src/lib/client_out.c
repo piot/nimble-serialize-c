@@ -36,7 +36,8 @@ int nimbleSerializeClientOutConnectRequest(FldOutStream* stream, const NimbleSer
     nimbleSerializeWriteCommand(stream, NimbleSerializeCmdConnectRequest, log);
     nimbleSerializeOutVersion(stream, &g_nimbleProtocolVersion);
     fldOutStreamWriteUInt8(stream, request->useDebugStreams);
-    return nimbleSerializeOutVersion(stream, &request->applicationVersion);
+    nimbleSerializeOutVersion(stream, &request->applicationVersion);
+    return nimbleSerializeOutNonce(stream, request->nonce);
 }
 
 /// Writes a JoinGameRequest to the octet stream
