@@ -30,8 +30,8 @@ int nimbleSerializeInConnectionIdSecret(struct FldInStream* stream, NimbleSerial
 int nimbleSerializeOutParticipantId(struct FldOutStream* stream, NimbleSerializeParticipantId participantId);
 int nimbleSerializeInParticipantId(struct FldInStream* stream, NimbleSerializeParticipantId* participantId);
 
-int nimbleSerializeOutPartyId(struct FldOutStream* stream, NimbleSerializeParticipantPartyId partyId);
-int nimbleSerializeInPartyId(struct FldInStream* stream, NimbleSerializeParticipantPartyId* partyId);
+int nimbleSerializeOutPartyId(struct FldOutStream* stream, NimbleSerializeLocalPartyId partyId);
+int nimbleSerializeInPartyId(struct FldInStream* stream, NimbleSerializeLocalPartyId* partyId);
 
 int nimbleSerializeOutPartyAndSessionSecret(struct FldOutStream* stream, NimbleSerializePartyAndSessionSecret secret);
 int nimbleSerializeInPartyAndSessionSecret(struct FldInStream* stream, NimbleSerializePartyAndSessionSecret* secret);

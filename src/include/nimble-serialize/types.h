@@ -11,7 +11,7 @@
 
 typedef uint32_t NimbleSerializeBlobStreamChannelId;
 typedef uint32_t NimbleSerializeStateId;
-typedef uint8_t NimbleSerializeParticipantPartyId;
+typedef uint8_t NimbleSerializeLocalPartyId;
 typedef uint8_t NimbleSerializeParticipantId;
 typedef uint64_t NimbleSerializeNonce;
 typedef uint8_t NimbleSerializeConnectionId;
@@ -26,8 +26,13 @@ typedef struct {
 
 typedef struct {
     NimbleSerializeSessionSecret sessionSecret;
-    NimbleSerializeParticipantPartyId participantPartyId;
+    NimbleSerializeLocalPartyId partyId;
 } NimbleSerializePartyAndSessionSecret;
+
+typedef struct {
+    NimbleSerializeParticipantId participantIds[NIMBLE_SERIALIZE_MAX_LOCAL_PLAYERS];
+    size_t participantCount;
+} NimbleSerializeLocalPartyInfo;
 
 typedef struct NimbleSerializeConnectRequest {
     NimbleSerializeVersion applicationVersion;

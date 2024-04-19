@@ -106,7 +106,7 @@ int nimbleSerializeInSessionSecret(struct FldInStream* stream, NimbleSerializeSe
 /// @param stream out stream
 /// @param partyId if of the party
 /// @return negative on error
-int nimbleSerializeOutPartyId(struct FldOutStream* stream, NimbleSerializeParticipantPartyId partyId)
+int nimbleSerializeOutPartyId(struct FldOutStream* stream, NimbleSerializeLocalPartyId partyId)
 {
     fldOutStreamWriteMarker(stream, NIMBLE_SERIALIZE_MARKER_PARTY_ID);
     return fldOutStreamWriteUInt8(stream, partyId);
@@ -116,7 +116,7 @@ int nimbleSerializeOutPartyId(struct FldOutStream* stream, NimbleSerializePartic
 /// @param stream out stream
 /// @param partyId id of the party
 /// @return negative on error
-int nimbleSerializeInPartyId(struct FldInStream* stream, NimbleSerializeParticipantPartyId* partyId)
+int nimbleSerializeInPartyId(struct FldInStream* stream, NimbleSerializeLocalPartyId* partyId)
 {
     fldInStreamCheckMarker(stream, NIMBLE_SERIALIZE_MARKER_PARTY_ID);
     return fldInStreamReadUInt8(stream, partyId);
@@ -125,13 +125,13 @@ int nimbleSerializeInPartyId(struct FldInStream* stream, NimbleSerializeParticip
 int nimbleSerializeOutPartyAndSessionSecret(struct FldOutStream* stream, NimbleSerializePartyAndSessionSecret secret)
 {
     nimbleSerializeOutSessionSecret(stream, secret.sessionSecret);
-    return nimbleSerializeOutPartyId(stream, secret.participantPartyId);
+    return nimbleSerializeOutPartyId(stream, secret.partyId);
 }
 
 int nimbleSerializeInPartyAndSessionSecret(struct FldInStream* stream, NimbleSerializePartyAndSessionSecret* secret)
 {
     nimbleSerializeInSessionSecret(stream, &secret->sessionSecret);
-    return nimbleSerializeInPartyId(stream, &secret->participantPartyId);
+    return nimbleSerializeInPartyId(stream, &secret->partyId);
 }
 
 /// Writes a participantId to the octet stream
