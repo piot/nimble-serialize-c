@@ -35,23 +35,25 @@ int nimbleSerializeServerOutJoinGameResponse(FldOutStream* outStream,
 {
     nimbleSerializeWriteCommand(outStream, NimbleSerializeCmdJoinGameResponse, log);
 
-    int errorCode = fldOutStreamWriteUInt8(outStream, gameResponse->participantConnectionIndex);
-    if (errorCode < 0) {
-        return errorCode;
-    }
     if (gameResponse->participantCount == 0) {
         CLOG_ERROR("participant count zero is not allowed")
         // return -44;
     }
 
-    nimbleSerializeOutConnectionSecret(outStream, gameResponse->participantConnectionSecret);
+    nimbleSerializeOutPartyAndSessionSecret(outStream, gameResponse->partyAndSessionSecret);
 
-    fldOutStreamWriteUInt8(outStream, (uint8_t) gameResponse->participantCount);
+    int errorCode = fldOutStreamWriteUInt8(outStream, (uint8_t) gameResponse->participantCount);
+    if (errorCode < 0) {
+        return errorCode;
+    }
 
     for (size_t i = 0; i < gameResponse->participantCount; ++i) {
         const NimbleSerializeJoinGameResponseParticipant* participant = &gameResponse->participants[i];
-        fldOutStreamWriteUInt8(outStream, (uint8_t) participant->localIndex);
-        errorCode = fldOutStreamWriteUInt8(outStream, (uint8_t) participant->id);
+        errorCode = fldOutStreamWriteUInt8(outStream, (uint8_t) participant->localIndex);
+        if (errorCode < 0) {
+            return errorCode;
+        }
+        errorCode = nimbleSerializeOutParticipantId(outStream, participant->participantId);
         if (errorCode < 0) {
             return errorCode;
         }
@@ -69,7 +71,7 @@ int nimbleSerializeServerOutConnectResponse(FldOutStream* outStream, const Nimbl
 
     nimbleSerializeOutNonce(outStream, response->responseToNonce);
     nimbleSerializeOutConnectionId(outStream, response->connectionId);
-    return nimbleSerializeOutConnectSecret(outStream, response->connectionSecret);
+    return nimbleSerializeOutConnectionIdSecret(outStream, response->connectionIdSecret);
 }
 
 /// Serializes an out of participant slot response
