@@ -14,11 +14,11 @@
 
 static const uint8_t NIMBLE_SERIALIZE_MARKER_CHANNEL_ID = 0x19;
 static const uint8_t NIMBLE_SERIALIZE_MARKER_STATE_ID = 0x9a;
-static const uint8_t NIMBLE_SERIALIZE_MARKER_NONCE_ID = 0xe2;
-static const uint8_t NIMBLE_SERIALIZE_MARKER_CONNECTION_SECRET_ID = 0xe3;
-static const uint8_t NIMBLE_SERIALIZE_MARKER_CONNECT_SECRET_ID = 0x65;
+//static const uint8_t NIMBLE_SERIALIZE_MARKER_NONCE_ID = 0xe2;
+//static const uint8_t NIMBLE_SERIALIZE_MARKER_CONNECTION_SECRET_ID = 0xe3;
+//static const uint8_t NIMBLE_SERIALIZE_MARKER_CONNECT_SECRET_ID = 0x65;
 static const uint8_t NIMBLE_SERIALIZE_MARKER_PARTICIPANT_ID = 0x2d;
-static const uint8_t NIMBLE_SERIALIZE_MARKER_CONNECTION_ID = 0xae;
+//static const uint8_t NIMBLE_SERIALIZE_MARKER_CONNECTION_ID = 0xae;
 
 /// Writes a nonce to the octet stream
 /// @param stream out stream
@@ -26,7 +26,7 @@ static const uint8_t NIMBLE_SERIALIZE_MARKER_CONNECTION_ID = 0xae;
 /// @return negative on error
 int nimbleSerializeOutNonce(struct FldOutStream* stream, NimbleSerializeNonce nonce)
 {
-    fldOutStreamWriteMarker(stream, NIMBLE_SERIALIZE_MARKER_NONCE_ID);
+//    fldOutStreamWriteMarker(stream, NIMBLE_SERIALIZE_MARKER_NONCE_ID);
     return fldOutStreamWriteUInt64(stream, nonce);
 }
 
@@ -36,7 +36,7 @@ int nimbleSerializeOutNonce(struct FldOutStream* stream, NimbleSerializeNonce no
 /// @return negative on error
 int nimbleSerializeInNonce(struct FldInStream* stream, NimbleSerializeNonce* nonce)
 {
-    fldInStreamCheckMarker(stream, NIMBLE_SERIALIZE_MARKER_NONCE_ID);
+    //fldInStreamCheckMarker(stream, NIMBLE_SERIALIZE_MARKER_NONCE_ID);
     return fldInStreamReadUInt64(stream, nonce);
 }
 
@@ -46,7 +46,7 @@ int nimbleSerializeInNonce(struct FldInStream* stream, NimbleSerializeNonce* non
 /// @return negative on error
 int nimbleSerializeOutConnectionId(struct FldOutStream* stream, NimbleSerializeConnectionId connectionId)
 {
-    fldOutStreamWriteMarker(stream, NIMBLE_SERIALIZE_MARKER_CONNECTION_ID);
+    //fldOutStreamWriteMarker(stream, NIMBLE_SERIALIZE_MARKER_CONNECTION_ID);
     return fldOutStreamWriteUInt8(stream, connectionId);
 }
 
@@ -56,7 +56,7 @@ int nimbleSerializeOutConnectionId(struct FldOutStream* stream, NimbleSerializeC
 /// @return negative on error
 int nimbleSerializeInConnectionId(struct FldInStream* stream, NimbleSerializeConnectionId* connectionId)
 {
-    fldInStreamCheckMarker(stream, NIMBLE_SERIALIZE_MARKER_CONNECTION_ID);
+   // fldInStreamCheckMarker(stream, NIMBLE_SERIALIZE_MARKER_CONNECTION_ID);
     return fldInStreamReadUInt8(stream, connectionId);
 }
 
@@ -66,7 +66,6 @@ int nimbleSerializeInConnectionId(struct FldInStream* stream, NimbleSerializeCon
 /// @return negative on error
 int nimbleSerializeOutConnectionSecret(struct FldOutStream* stream, NimbleSerializeParticipantConnectionSecret secret)
 {
-    fldOutStreamWriteMarker(stream, NIMBLE_SERIALIZE_MARKER_CONNECTION_SECRET_ID);
     return fldOutStreamWriteUInt64(stream, secret);
 }
 
@@ -76,7 +75,6 @@ int nimbleSerializeOutConnectionSecret(struct FldOutStream* stream, NimbleSerial
 /// @return negative on error
 int nimbleSerializeInConnectionSecret(struct FldInStream* stream, NimbleSerializeParticipantConnectionSecret* secret)
 {
-    fldInStreamCheckMarker(stream, NIMBLE_SERIALIZE_MARKER_CONNECTION_SECRET_ID);
     return fldInStreamReadUInt64(stream, secret);
 }
 
@@ -87,7 +85,7 @@ int nimbleSerializeInConnectionSecret(struct FldInStream* stream, NimbleSerializ
 /// @return negative on error
 int nimbleSerializeOutConnectSecret(struct FldOutStream* stream, NimbleSerializeConnectionSecret secret)
 {
-    fldOutStreamWriteMarker(stream, NIMBLE_SERIALIZE_MARKER_CONNECT_SECRET_ID);
+    //fldOutStreamWriteMarker(stream, NIMBLE_SERIALIZE_MARKER_CONNECT_SECRET_ID);
     return fldOutStreamWriteUInt64(stream, secret);
 }
 
@@ -97,7 +95,7 @@ int nimbleSerializeOutConnectSecret(struct FldOutStream* stream, NimbleSerialize
 /// @return negative on error
 int nimbleSerializeInConnectSecret(struct FldInStream* stream, NimbleSerializeConnectionSecret* secret)
 {
-    fldInStreamCheckMarker(stream, NIMBLE_SERIALIZE_MARKER_CONNECT_SECRET_ID);
+    //fldInStreamCheckMarker(stream, NIMBLE_SERIALIZE_MARKER_CONNECT_SECRET_ID);
     return fldInStreamReadUInt64(stream, secret);
 }
 

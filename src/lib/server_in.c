@@ -23,9 +23,10 @@ int nimbleSerializeServerInConnectRequest(FldInStream* stream, NimbleSerializeCo
 
     if (!nimbleSerializeVersionIsEqual(&nimbleProtocolVersion, &g_nimbleProtocolVersion)) {
         char buf[32];
+        char buf2[32];
         CLOG_SOFT_ERROR("wrong version of nimble protocol version. expected %s, but encountered %s",
                         nimbleSerializeVersionToString(&g_nimbleProtocolVersion, buf, 32),
-                        nimbleSerializeVersionToString(&nimbleProtocolVersion, buf, 32))
+                        nimbleSerializeVersionToString(&nimbleProtocolVersion, buf2, 32))
         return -2;
     }
 
@@ -79,6 +80,8 @@ int nimbleSerializeServerInJoinGameRequest(FldInStream* stream, NimbleSerializeJ
     fldInStreamReadUInt8(stream, &joinGameType);
 
     request->joinGameType = (NimbleSerializeJoinGameType) joinGameType;
+
+    CLOG_VERBOSE("join game type: %d", request->joinGameType)
 
     switch (request->joinGameType) {
         case NimbleSerializeJoinGameTypeNoSecret:
