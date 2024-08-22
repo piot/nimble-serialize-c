@@ -12,13 +12,14 @@
 #include <nimble-serialize/debug.h>
 #endif
 
-static const uint8_t NIMBLE_SERIALIZE_MARKER_CHANNEL_ID = 0x19;
-static const uint8_t NIMBLE_SERIALIZE_MARKER_STATE_ID = 0x9a;
+//static const uint8_t NIMBLE_SERIALIZE_MARKER_CHANNEL_ID = 0x19;
+//static const uint8_t NIMBLE_SERIALIZE_MARKER_STATE_ID = 0x9a;
 //static const uint8_t NIMBLE_SERIALIZE_MARKER_NONCE_ID = 0xe2;
-//static const uint8_t NIMBLE_SERIALIZE_MARKER_CONNECTION_SECRET_ID = 0xe3;
-//static const uint8_t NIMBLE_SERIALIZE_MARKER_CONNECT_SECRET_ID = 0x65;
-static const uint8_t NIMBLE_SERIALIZE_MARKER_PARTICIPANT_ID = 0x2d;
+//static const uint8_t NIMBLE_SERIALIZE_MARKER_SESSION_SECRET_ID = 0x68;
+//static const uint8_t NIMBLE_SERIALIZE_MARKER_PARTICIPANT_ID = 0x2d;
+//static const uint8_t NIMBLE_SERIALIZE_MARKER_PARTY_ID = 0x2e;
 //static const uint8_t NIMBLE_SERIALIZE_MARKER_CONNECTION_ID = 0xae;
+//static const uint8_t NIMBLE_SERIALIZE_MARKER_CONNECTION_ID_SECRET = 0xed;
 
 /// Writes a nonce to the octet stream
 /// @param stream out stream
@@ -60,43 +61,77 @@ int nimbleSerializeInConnectionId(struct FldInStream* stream, NimbleSerializeCon
     return fldInStreamReadUInt8(stream, connectionId);
 }
 
+/// Writes a nonce to the octet stream
+/// @param stream out stream
+/// @param connectionSecret connectionSecret
+/// @return negative on error
+int nimbleSerializeOutConnectionIdSecret(struct FldOutStream* stream,
+                                         NimbleSerializeConnectionIdSecret connectionSecret)
+{
+    //fldOutStreamWriteMarker(stream, NIMBLE_SERIALIZE_MARKER_CONNECTION_ID_SECRET);
+    return fldOutStreamWriteUInt64(stream, connectionSecret);
+}
+
+/// Reads a nonce from the octet stream
+/// @param stream out stream
+/// @param connectionSecret connectionSecret
+/// @return negative on error
+int nimbleSerializeInConnectionIdSecret(struct FldInStream* stream, NimbleSerializeConnectionIdSecret* connectionSecret)
+{
+    //fldInStreamCheckMarker(stream, NIMBLE_SERIALIZE_MARKER_CONNECTION_ID_SECRET);
+    return fldInStreamReadUInt64(stream, connectionSecret);
+}
+
 /// Writes a secret to the octet stream
 /// @param stream out stream
 /// @param secret nonce
 /// @return negative on error
-int nimbleSerializeOutConnectionSecret(struct FldOutStream* stream, NimbleSerializeParticipantConnectionSecret secret)
+int nimbleSerializeOutSessionSecret(struct FldOutStream* stream, NimbleSerializeSessionSecret secret)
 {
-    return fldOutStreamWriteUInt64(stream, secret);
+//    fldOutStreamWriteMarker(stream, NIMBLE_SERIALIZE_MARKER_SESSION_SECRET_ID);
+    return fldOutStreamWriteUInt64(stream, secret.value);
 }
 
 /// Reads a secret from the octet stream
 /// @param stream out stream
 /// @param secret secret
 /// @return negative on error
-int nimbleSerializeInConnectionSecret(struct FldInStream* stream, NimbleSerializeParticipantConnectionSecret* secret)
+int nimbleSerializeInSessionSecret(struct FldInStream* stream, NimbleSerializeSessionSecret* secret)
 {
-    return fldInStreamReadUInt64(stream, secret);
+  //  fldInStreamCheckMarker(stream, NIMBLE_SERIALIZE_MARKER_SESSION_SECRET_ID);
+    return fldInStreamReadUInt64(stream, &secret->value);
 }
 
-
-/// Writes a secret to the octet stream
+/// Writes a partyID to the octet stream
 /// @param stream out stream
-/// @param secret nonce
+/// @param partyId if of the party
 /// @return negative on error
-int nimbleSerializeOutConnectSecret(struct FldOutStream* stream, NimbleSerializeConnectionSecret secret)
+int nimbleSerializeOutPartyId(struct FldOutStream* stream, NimbleSerializeLocalPartyId partyId)
 {
-    //fldOutStreamWriteMarker(stream, NIMBLE_SERIALIZE_MARKER_CONNECT_SECRET_ID);
-    return fldOutStreamWriteUInt64(stream, secret);
+    ///fldOutStreamWriteMarker(stream, NIMBLE_SERIALIZE_MARKER_PARTY_ID);
+    return fldOutStreamWriteUInt8(stream, partyId);
 }
 
-/// Reads a secret from the octet stream
+/// Reads a partyID from the octet stream
 /// @param stream out stream
-/// @param secret secret
+/// @param partyId id of the party
 /// @return negative on error
-int nimbleSerializeInConnectSecret(struct FldInStream* stream, NimbleSerializeConnectionSecret* secret)
+int nimbleSerializeInPartyId(struct FldInStream* stream, NimbleSerializeLocalPartyId* partyId)
 {
-    //fldInStreamCheckMarker(stream, NIMBLE_SERIALIZE_MARKER_CONNECT_SECRET_ID);
-    return fldInStreamReadUInt64(stream, secret);
+    //fldInStreamCheckMarker(stream, NIMBLE_SERIALIZE_MARKER_PARTY_ID);
+    return fldInStreamReadUInt8(stream, partyId);
+}
+
+int nimbleSerializeOutPartyAndSessionSecret(struct FldOutStream* stream, NimbleSerializePartyAndSessionSecret secret)
+{
+    nimbleSerializeOutSessionSecret(stream, secret.sessionSecret);
+    return nimbleSerializeOutPartyId(stream, secret.partyId);
+}
+
+int nimbleSerializeInPartyAndSessionSecret(struct FldInStream* stream, NimbleSerializePartyAndSessionSecret* secret)
+{
+    nimbleSerializeInSessionSecret(stream, &secret->sessionSecret);
+    return nimbleSerializeInPartyId(stream, &secret->partyId);
 }
 
 /// Writes a participantId to the octet stream
@@ -105,7 +140,7 @@ int nimbleSerializeInConnectSecret(struct FldInStream* stream, NimbleSerializeCo
 /// @return negative on error
 int nimbleSerializeOutParticipantId(struct FldOutStream* stream, NimbleSerializeParticipantId participantId)
 {
-    fldOutStreamWriteMarker(stream, NIMBLE_SERIALIZE_MARKER_PARTICIPANT_ID);
+//    fldOutStreamWriteMarker(stream, NIMBLE_SERIALIZE_MARKER_PARTICIPANT_ID);
     return fldOutStreamWriteUInt8(stream, participantId);
 }
 
@@ -115,7 +150,7 @@ int nimbleSerializeOutParticipantId(struct FldOutStream* stream, NimbleSerialize
 /// @return negative on error
 int nimbleSerializeInParticipantId(struct FldInStream* stream, NimbleSerializeParticipantId* participantId)
 {
-    fldInStreamCheckMarker(stream, NIMBLE_SERIALIZE_MARKER_PARTICIPANT_ID);
+  //  fldInStreamCheckMarker(stream, NIMBLE_SERIALIZE_MARKER_PARTICIPANT_ID);
     return fldInStreamReadUInt8(stream, participantId);
 }
 
@@ -126,7 +161,7 @@ int nimbleSerializeInParticipantId(struct FldInStream* stream, NimbleSerializePa
 int nimbleSerializeOutBlobStreamChannelId(struct FldOutStream* stream,
                                           const NimbleSerializeBlobStreamChannelId channelId)
 {
-    fldOutStreamWriteMarker(stream, NIMBLE_SERIALIZE_MARKER_CHANNEL_ID);
+    //fldOutStreamWriteMarker(stream, NIMBLE_SERIALIZE_MARKER_CHANNEL_ID);
     return fldOutStreamWriteUInt32(stream, channelId);
 }
 
@@ -136,7 +171,7 @@ int nimbleSerializeOutBlobStreamChannelId(struct FldOutStream* stream,
 /// @return negative on error
 int nimbleSerializeInBlobStreamChannelId(struct FldInStream* stream, NimbleSerializeBlobStreamChannelId* channelId)
 {
-    fldInStreamCheckMarker(stream, NIMBLE_SERIALIZE_MARKER_CHANNEL_ID);
+    //fldInStreamCheckMarker(stream, NIMBLE_SERIALIZE_MARKER_CHANNEL_ID);
     return fldInStreamReadUInt32(stream, channelId);
 }
 
@@ -146,7 +181,7 @@ int nimbleSerializeInBlobStreamChannelId(struct FldInStream* stream, NimbleSeria
 /// @return negative on error
 int nimbleSerializeOutStateId(struct FldOutStream* stream, const NimbleSerializeStateId stateId)
 {
-    fldOutStreamWriteMarker(stream, NIMBLE_SERIALIZE_MARKER_STATE_ID);
+//    fldOutStreamWriteMarker(stream, NIMBLE_SERIALIZE_MARKER_STATE_ID);
     return fldOutStreamWriteUInt32(stream, stateId);
 }
 
@@ -156,7 +191,7 @@ int nimbleSerializeOutStateId(struct FldOutStream* stream, const NimbleSerialize
 /// @return negative on error
 int nimbleSerializeInStateId(struct FldInStream* stream, NimbleSerializeStateId* stateId)
 {
-    fldInStreamCheckMarker(stream, NIMBLE_SERIALIZE_MARKER_STATE_ID);
+  //  fldInStreamCheckMarker(stream, NIMBLE_SERIALIZE_MARKER_STATE_ID);
     return fldInStreamReadUInt32(stream, stateId);
 }
 
@@ -166,7 +201,7 @@ int nimbleSerializeInStateId(struct FldInStream* stream, NimbleSerializeStateId*
 /// @param log log target
 void nimbleSerializeWriteCommand(struct FldOutStream* outStream, uint8_t cmd, Clog* log)
 {
-#if defined CLOG_LOG_ENABLED
+#if defined CLOG_LOG_ENABLED && 0
     CLOG_C_VERBOSE(log, "serialize cmd:%s", nimbleSerializeCmdToString(cmd))
 #else
     (void) log;

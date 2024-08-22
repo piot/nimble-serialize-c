@@ -4,13 +4,13 @@
  *--------------------------------------------------------------------------------------------*/
 #include <clog/clog.h>
 #include <flood/out_stream.h>
+#include <inttypes.h>
 #include <nimble-serialize/client_out.h>
 #include <nimble-serialize/serialize.h>
-#include <inttypes.h>
 
-NimbleSerializeVersion g_nimbleProtocolVersion = {0, 0, 4};
+NimbleSerializeVersion g_nimbleProtocolVersion = {0, 0, 5};
 
-static int nimbleSerializeClientOutParticipantConnectionJoin(FldOutStream* stream,
+static int nimbleSerializeClientOutLocalPartyJoin(FldOutStream* stream,
                                                              const struct NimbleSerializeJoinGameRequestPlayer* players,
                                                              size_t playerCount, Clog* log)
 {
@@ -18,9 +18,17 @@ static int nimbleSerializeClientOutParticipantConnectionJoin(FldOutStream* strea
         CLOG_C_ERROR(log, "player count must be greater than zero")
     }
     CLOG_C_VERBOSE(log, "writing joining player count %zu", playerCount)
-    fldOutStreamWriteUInt8(stream, (uint8_t) playerCount);
+    int error = fldOutStreamWriteUInt8(stream, (uint8_t) playerCount);
+    if (error < 0) {
+        return error;
+    }
+
     for (size_t i = 0; i < playerCount; ++i) {
-        fldOutStreamWriteUInt8(stream, players[i].localIndex);
+        const NimbleSerializeJoinGameRequestPlayer* player = &players[i];
+        error = fldOutStreamWriteUInt8(stream, player->localIndex);
+        if (error < 0) {
+            return error;
+        }
     }
 
     return 0;
@@ -50,21 +58,9 @@ int nimbleSerializeClientOutJoinGameRequest(FldOutStream* stream, const NimbleSe
     nimbleSerializeWriteCommand(stream, NimbleSerializeCmdJoinGameRequest, log);
     nimbleSerializeOutNonce(stream, request->nonce);
     fldOutStreamWriteUInt8(stream, (uint8_t) request->joinGameType);
-
-    CLOG_C_DEBUG(log, "join game request type: %u", request->joinGameType)
-
-    switch (request->joinGameType) {
-        case NimbleSerializeJoinGameTypeNoSecret:
-            break;
-        case NimbleSerializeJoinGameTypeSecret:
-            CLOG_C_DEBUG(log, "join game request secret id: %" PRIX64, request->connectionSecret)
-            nimbleSerializeOutConnectionSecret(stream, request->connectionSecret);
-            break;
-        case NimbleSerializeJoinGameTypeHostMigrationParticipantId:
-            CLOG_C_DEBUG(log, "join game request host migration participant id: %hhu", request->participantId)
-            nimbleSerializeOutParticipantId(stream, request->participantId);
-            break;
+    if (request->joinGameType == NimbleSerializeJoinGameTypePartySecret) {
+        nimbleSerializeOutPartyAndSessionSecret(stream, request->partyAndSessionSecret);
     }
 
-    return nimbleSerializeClientOutParticipantConnectionJoin(stream, request->players, request->playerCount, log);
+    return nimbleSerializeClientOutLocalPartyJoin(stream, request->players, request->playerCount, log);
 }

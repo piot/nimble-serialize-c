@@ -20,15 +20,21 @@ int nimbleSerializeInNonce(struct FldInStream* stream, NimbleSerializeNonce* non
 int nimbleSerializeOutConnectionId(struct FldOutStream* stream, NimbleSerializeConnectionId connectionId);
 int nimbleSerializeInConnectionId(struct FldInStream* stream, NimbleSerializeConnectionId* connectionId);
 
-int nimbleSerializeOutConnectSecret(struct FldOutStream* stream, NimbleSerializeConnectionSecret connectSecret);
-int nimbleSerializeInConnectSecret(struct FldInStream* stream, NimbleSerializeConnectionSecret* connectSecret);
 
+int nimbleSerializeOutSessionSecret(struct FldOutStream* stream, NimbleSerializeSessionSecret secret);
+int nimbleSerializeInSessionSecret(struct FldInStream* stream, NimbleSerializeSessionSecret* secret);
 
-int nimbleSerializeOutConnectionSecret(struct FldOutStream* stream, NimbleSerializeParticipantConnectionSecret secret);
-int nimbleSerializeInConnectionSecret(struct FldInStream* stream, NimbleSerializeParticipantConnectionSecret* secret);
+int nimbleSerializeOutConnectionIdSecret(struct FldOutStream* stream, NimbleSerializeConnectionIdSecret secret);
+int nimbleSerializeInConnectionIdSecret(struct FldInStream* stream, NimbleSerializeConnectionIdSecret* secret);
 
 int nimbleSerializeOutParticipantId(struct FldOutStream* stream, NimbleSerializeParticipantId participantId);
 int nimbleSerializeInParticipantId(struct FldInStream* stream, NimbleSerializeParticipantId* participantId);
+
+int nimbleSerializeOutPartyId(struct FldOutStream* stream, NimbleSerializeLocalPartyId partyId);
+int nimbleSerializeInPartyId(struct FldInStream* stream, NimbleSerializeLocalPartyId* partyId);
+
+int nimbleSerializeOutPartyAndSessionSecret(struct FldOutStream* stream, NimbleSerializePartyAndSessionSecret secret);
+int nimbleSerializeInPartyAndSessionSecret(struct FldInStream* stream, NimbleSerializePartyAndSessionSecret* secret);
 
 int nimbleSerializeOutBlobStreamChannelId(struct FldOutStream* stream,
                                           const NimbleSerializeBlobStreamChannelId channelId);

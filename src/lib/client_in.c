@@ -17,21 +17,23 @@ int nimbleSerializeClientInConnectResponse(FldInStream* stream, NimbleSerializeC
 
     nimbleSerializeInNonce(stream, &options->responseToNonce);
     nimbleSerializeInConnectionId(stream, &options->connectionId);
-    return nimbleSerializeInConnectSecret(stream, &options->connectionSecret);
+    return nimbleSerializeInConnectionIdSecret(stream, &options->connectionIdSecret);
 }
 
 int nimbleSerializeClientInJoinGameResponse(FldInStream* inStream, NimbleSerializeJoinGameResponse* response)
 {
-    int errorCode = fldInStreamReadUInt8(inStream, &response->participantConnectionIndex);
-    if (errorCode < 0) {
-        return errorCode;
-    }
-
-    nimbleSerializeInConnectionSecret(inStream, &response->participantConnectionSecret);
-
     uint8_t participantCount;
 
-    fldInStreamReadUInt8(inStream, &participantCount);
+    int error = nimbleSerializeInPartyAndSessionSecret(inStream, &response->partyAndSessionSecret);
+    if (error < 0) {
+        return error;
+    }
+
+
+    error = fldInStreamReadUInt8(inStream, &participantCount);
+    if (error < 0) {
+        return error;
+    }
 
     response->participantCount = participantCount;
     if (response->participantCount == 0) {
@@ -43,13 +45,10 @@ int nimbleSerializeClientInJoinGameResponse(FldInStream* inStream, NimbleSeriali
         uint8_t localIndex;
         fldInStreamReadUInt8(inStream, &localIndex);
         participant->localIndex = localIndex;
-
-        uint8_t participantId;
-        errorCode = fldInStreamReadUInt8(inStream, &participantId);
-        if (errorCode < 0) {
-            return errorCode;
+        error = nimbleSerializeInParticipantId(inStream, &participant->participantId);
+        if (error < 0) {
+            return error;
         }
-        participant->id = participantId;
     }
 
     return 0;

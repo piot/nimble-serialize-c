@@ -46,7 +46,10 @@ static int nimbleSerializeServerInJoinGameRequestPlayers(FldInStream* stream,
 {
     uint8_t playerCount;
 
-    fldInStreamReadUInt8(stream, &playerCount);
+    int error = fldInStreamReadUInt8(stream, &playerCount);
+    if (error < 0) {
+        return error;
+    }
 
     if (playerCount == 0 || playerCount > 8) {
         CLOG_SOFT_ERROR("illegal player count %hhu in join game request."
@@ -57,7 +60,11 @@ static int nimbleSerializeServerInJoinGameRequestPlayers(FldInStream* stream,
     }
 
     for (size_t i = 0; i < playerCount; ++i) {
-        fldInStreamReadUInt8(stream, &players[i].localIndex);
+        NimbleSerializeJoinGameRequestPlayer* player = &players[i];
+        error = fldInStreamReadUInt8(stream, &player->localIndex);
+        if (error < 0) {
+            return error;
+        }
     }
 
     *outPlayerCount = playerCount;
@@ -74,25 +81,12 @@ static int nimbleSerializeServerInJoinGameRequestPlayers(FldInStream* stream,
 int nimbleSerializeServerInJoinGameRequest(FldInStream* stream, NimbleSerializeJoinGameRequest* request)
 {
     nimbleSerializeInNonce(stream, &request->nonce);
-
-    uint8_t joinGameType = 0;
-
-    fldInStreamReadUInt8(stream, &joinGameType);
-
-    request->joinGameType = (NimbleSerializeJoinGameType) joinGameType;
-
-    CLOG_VERBOSE("join game type: %d", request->joinGameType)
-
-    switch (request->joinGameType) {
-        case NimbleSerializeJoinGameTypeNoSecret:
-            break;
-        case NimbleSerializeJoinGameTypeSecret:
-            nimbleSerializeInConnectionSecret(stream, &request->connectionSecret);
-            break;
-        case NimbleSerializeJoinGameTypeHostMigrationParticipantId:
-            nimbleSerializeInParticipantId(stream, &request->participantId);
-            break;
+    uint8_t joinGameTypeValue;
+    fldInStreamReadUInt8(stream, &joinGameTypeValue);
+    NimbleSerializeJoinGameType joinGameType = (NimbleSerializeJoinGameType) joinGameTypeValue;
+    if (joinGameType == NimbleSerializeJoinGameTypePartySecret) {
+        nimbleSerializeInPartyAndSessionSecret(stream, &request->partyAndSessionSecret);
     }
-
+    request->joinGameType = joinGameType;
     return nimbleSerializeServerInJoinGameRequestPlayers(stream, request->players, &request->playerCount);
 }
