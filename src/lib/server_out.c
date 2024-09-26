@@ -1,7 +1,8 @@
-/*---------------------------------------------------------------------------------------------
- *  Copyright (c) Peter Bjorklund. All rights reserved.
+/*----------------------------------------------------------------------------------------------------------
+ *  Copyright (c) Peter Bjorklund. All rights reserved. https://github.com/piot/nimble-serialize-c
  *  Licensed under the MIT License. See LICENSE in the project root for license information.
- *--------------------------------------------------------------------------------------------*/
+ *--------------------------------------------------------------------------------------------------------*/
+
 #include <clog/clog.h>
 #include <flood/out_stream.h>
 #include <nimble-serialize/commands.h>
@@ -69,9 +70,8 @@ int nimbleSerializeServerOutConnectResponse(FldOutStream* outStream, const Nimbl
 
     fldOutStreamWriteUInt8(outStream, response->useDebugStreams ? 0x01 : 0x00);
 
-    nimbleSerializeOutNonce(outStream, response->responseToNonce);
-    nimbleSerializeOutConnectionId(outStream, response->connectionId);
-    return nimbleSerializeOutConnectionIdSecret(outStream, response->connectionIdSecret);
+    nimbleSerializeOutNonce(outStream, response->responseToRequestId);
+    return nimbleSerializeOutConnectionId(outStream, response->connectionId);
 }
 
 /// Serializes an out of participant slot response
@@ -102,7 +102,8 @@ int nimbleSerializeServerOutGameStateResponse(FldOutStream* outStream, Serialize
     nimbleSerializeWriteCommand(outStream, NimbleSerializeCmdGameStateResponse, log);
     fldOutStreamWriteUInt8(outStream, clientRequestId);
     nimbleSerializeOutStateId(outStream, outGameState.stepId);
-    CLOG_C_VERBOSE(log, "sending octetCount %zu", outGameState.gameStateOctetCount)
-    fldOutStreamWriteUInt32(outStream, (uint32_t) outGameState.gameStateOctetCount);
+    CLOG_C_VERBOSE(log,
+                   "sending game state response. request: %02X tickId: %08X blobStreamChannel %04X (octetCount %zu)",
+                   clientRequestId, outGameState.stepId, blobStreamChannelId, outGameState.gameStateOctetCount)
     return nimbleSerializeOutBlobStreamChannelId(outStream, blobStreamChannelId);
 }

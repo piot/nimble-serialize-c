@@ -1,7 +1,8 @@
-/*---------------------------------------------------------------------------------------------
- *  Copyright (c) Peter Bjorklund. All rights reserved.
+/*----------------------------------------------------------------------------------------------------------
+ *  Copyright (c) Peter Bjorklund. All rights reserved. https://github.com/piot/nimble-serialize-c
  *  Licensed under the MIT License. See LICENSE in the project root for license information.
- *--------------------------------------------------------------------------------------------*/
+ *--------------------------------------------------------------------------------------------------------*/
+
 #include <clog/clog.h>
 #include <flood/in_stream.h>
 #include <flood/out_stream.h>
@@ -41,6 +42,27 @@ int nimbleSerializeInNonce(struct FldInStream* stream, NimbleSerializeNonce* non
     return fldInStreamReadUInt64(stream, nonce);
 }
 
+
+
+/// Writes a nonce to the octet stream
+/// @param stream out stream
+/// @param requestId requestId
+/// @return negative on error
+int nimbleSerializeOutClientRequestId(struct FldOutStream* stream, NimbleSerializeClientRequestId requestId)
+{
+    return fldOutStreamWriteUInt8(stream, requestId);
+}
+
+/// Reads a requestId from the octet stream
+/// @param stream out stream
+/// @param requestId requestId
+/// @return negative on error
+int nimbleSerializeInClientRequestId(struct FldInStream* stream, NimbleSerializeClientRequestId* requestId)
+{
+    return fldInStreamReadUInt8(stream, requestId);
+}
+
+
 /// Writes a connectionId to the octet stream
 /// @param stream out stream
 /// @param connectionId connectionId
@@ -61,26 +83,6 @@ int nimbleSerializeInConnectionId(struct FldInStream* stream, NimbleSerializeCon
     return fldInStreamReadUInt8(stream, connectionId);
 }
 
-/// Writes a nonce to the octet stream
-/// @param stream out stream
-/// @param connectionSecret connectionSecret
-/// @return negative on error
-int nimbleSerializeOutConnectionIdSecret(struct FldOutStream* stream,
-                                         NimbleSerializeConnectionIdSecret connectionSecret)
-{
-    //fldOutStreamWriteMarker(stream, NIMBLE_SERIALIZE_MARKER_CONNECTION_ID_SECRET);
-    return fldOutStreamWriteUInt64(stream, connectionSecret);
-}
-
-/// Reads a nonce from the octet stream
-/// @param stream out stream
-/// @param connectionSecret connectionSecret
-/// @return negative on error
-int nimbleSerializeInConnectionIdSecret(struct FldInStream* stream, NimbleSerializeConnectionIdSecret* connectionSecret)
-{
-    //fldInStreamCheckMarker(stream, NIMBLE_SERIALIZE_MARKER_CONNECTION_ID_SECRET);
-    return fldInStreamReadUInt64(stream, connectionSecret);
-}
 
 /// Writes a secret to the octet stream
 /// @param stream out stream
@@ -162,7 +164,7 @@ int nimbleSerializeOutBlobStreamChannelId(struct FldOutStream* stream,
                                           const NimbleSerializeBlobStreamChannelId channelId)
 {
     //fldOutStreamWriteMarker(stream, NIMBLE_SERIALIZE_MARKER_CHANNEL_ID);
-    return fldOutStreamWriteUInt32(stream, channelId);
+    return fldOutStreamWriteUInt16(stream, channelId);
 }
 
 /// Reads a channelId from the octet stream
@@ -172,7 +174,7 @@ int nimbleSerializeOutBlobStreamChannelId(struct FldOutStream* stream,
 int nimbleSerializeInBlobStreamChannelId(struct FldInStream* stream, NimbleSerializeBlobStreamChannelId* channelId)
 {
     //fldInStreamCheckMarker(stream, NIMBLE_SERIALIZE_MARKER_CHANNEL_ID);
-    return fldInStreamReadUInt32(stream, channelId);
+    return fldInStreamReadUInt16(stream, channelId);
 }
 
 /// Writes a stateId to the octet stream

@@ -1,7 +1,8 @@
-/*---------------------------------------------------------------------------------------------
- *  Copyright (c) Peter Bjorklund. All rights reserved.
+/*----------------------------------------------------------------------------------------------------------
+ *  Copyright (c) Peter Bjorklund. All rights reserved. https://github.com/piot/nimble-serialize-c
  *  Licensed under the MIT License. See LICENSE in the project root for license information.
- *--------------------------------------------------------------------------------------------*/
+ *--------------------------------------------------------------------------------------------------------*/
+
 #include <clog/clog.h>
 #include <flood/in_stream.h>
 #include <nimble-serialize/client_in.h>
@@ -15,9 +16,8 @@ int nimbleSerializeClientInConnectResponse(FldInStream* stream, NimbleSerializeC
 
     options->useDebugStreams = flags & 0x01;
 
-    nimbleSerializeInNonce(stream, &options->responseToNonce);
-    nimbleSerializeInConnectionId(stream, &options->connectionId);
-    return nimbleSerializeInConnectionIdSecret(stream, &options->connectionIdSecret);
+    nimbleSerializeInClientRequestId(stream, &options->responseToRequestId);
+    return nimbleSerializeInConnectionId(stream, &options->connectionId);
 }
 
 int nimbleSerializeClientInJoinGameResponse(FldInStream* inStream, NimbleSerializeJoinGameResponse* response)

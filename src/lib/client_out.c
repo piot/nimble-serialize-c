@@ -1,7 +1,8 @@
-/*---------------------------------------------------------------------------------------------
- *  Copyright (c) Peter Bjorklund. All rights reserved.
+/*----------------------------------------------------------------------------------------------------------
+ *  Copyright (c) Peter Bjorklund. All rights reserved. https://github.com/piot/nimble-serialize-c
  *  Licensed under the MIT License. See LICENSE in the project root for license information.
- *--------------------------------------------------------------------------------------------*/
+ *--------------------------------------------------------------------------------------------------------*/
+
 #include <clog/clog.h>
 #include <flood/out_stream.h>
 #include <inttypes.h>
@@ -45,7 +46,7 @@ int nimbleSerializeClientOutConnectRequest(FldOutStream* stream, const NimbleSer
     nimbleSerializeOutVersion(stream, &g_nimbleProtocolVersion);
     fldOutStreamWriteUInt8(stream, request->useDebugStreams);
     nimbleSerializeOutVersion(stream, &request->applicationVersion);
-    return nimbleSerializeOutNonce(stream, request->nonce);
+    return nimbleSerializeOutClientRequestId(stream, request->clientRequestId);
 }
 
 /// Writes a JoinGameRequest to the octet stream

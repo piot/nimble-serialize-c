@@ -18,3 +18,4 @@ build/
 .ninja_*
 *.ninja
 src/temp.zip
+src/lib/todo.txt

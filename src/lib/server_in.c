@@ -1,7 +1,8 @@
-/*---------------------------------------------------------------------------------------------
- *  Copyright (c) Peter Bjorklund. All rights reserved.
+/*----------------------------------------------------------------------------------------------------------
+ *  Copyright (c) Peter Bjorklund. All rights reserved. https://github.com/piot/nimble-serialize-c
  *  Licensed under the MIT License. See LICENSE in the project root for license information.
- *--------------------------------------------------------------------------------------------*/
+ *--------------------------------------------------------------------------------------------------------*/
+
 #include <clog/clog.h>
 #include <flood/in_stream.h>
 #include <nimble-serialize/commands.h>
@@ -37,7 +38,7 @@ int nimbleSerializeServerInConnectRequest(FldInStream* stream, NimbleSerializeCo
 
     nimbleSerializeInVersion(stream, &request->applicationVersion);
 
-    return nimbleSerializeInNonce(stream, &request->nonce);
+    return nimbleSerializeInClientRequestId(stream, &request->clientRequestId);
 }
 
 static int nimbleSerializeServerInJoinGameRequestPlayers(FldInStream* stream,

@@ -1,7 +1,8 @@
-/*---------------------------------------------------------------------------------------------
- *  Copyright (c) Peter Bjorklund. All rights reserved.
+/*----------------------------------------------------------------------------------------------------------
+ *  Copyright (c) Peter Bjorklund. All rights reserved. https://github.com/piot/nimble-serialize-c
  *  Licensed under the MIT License. See LICENSE in the project root for license information.
- *--------------------------------------------------------------------------------------------*/
+ *--------------------------------------------------------------------------------------------------------*/
+
 #ifndef NIMBLE_SERIALIZE_COMMANDS_H
 #define NIMBLE_SERIALIZE_COMMANDS_H
 
@@ -13,15 +14,15 @@
 #define NimbleSerializeCmdJoinGameRequest (0x01)
 #define NimbleSerializeCmdGameStep (0x02)
 #define NimbleSerializeCmdDownloadGameStateRequest (0x03)
-#define NimbleSerializeCmdDownloadGameStateStatus (0x04)
+#define NimbleSerializeCmdClientOutBlobStream (0x04)
 #define NimbleSerializeCmdConnectRequest (0x05)
 
 // Responses from Server to client
 #define NimbleSerializeCmdGameStepResponse (0x08)
 #define NimbleSerializeCmdJoinGameResponse (0x09)
-#define NimbleSerializeCmdGameStatePart (0x0a)
+#define NimbleSerializeCmdServerOutBlobStream (0x0c)
 #define NimbleSerializeCmdGameStateResponse (0x0b)
-#define NimbleSerializeCmdJoinGameOutOfParticipantSlotsResponse (0x0c)
+#define NimbleSerializeCmdJoinGameOutOfParticipantSlotsResponse (0x0e)
 #define NimbleSerializeCmdConnectResponse (0x0d)
 
 #endif

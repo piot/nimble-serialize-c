@@ -1,7 +1,8 @@
-/*---------------------------------------------------------------------------------------------
- *  Copyright (c) Peter Bjorklund. All rights reserved.
+/*----------------------------------------------------------------------------------------------------------
+ *  Copyright (c) Peter Bjorklund. All rights reserved. https://github.com/piot/nimble-serialize-c
  *  Licensed under the MIT License. See LICENSE in the project root for license information.
- *--------------------------------------------------------------------------------------------*/
+ *--------------------------------------------------------------------------------------------------------*/
+
 #ifndef NIMBLE_SERIALIZE_TYPES_H
 #define NIMBLE_SERIALIZE_TYPES_H
 
@@ -9,11 +10,12 @@
 #include <stddef.h>
 #include <stdint.h>
 
-typedef uint32_t NimbleSerializeBlobStreamChannelId;
+typedef uint16_t NimbleSerializeBlobStreamChannelId;
 typedef uint32_t NimbleSerializeStateId;
 typedef uint8_t NimbleSerializeLocalPartyId;
 typedef uint8_t NimbleSerializeParticipantId;
 typedef uint64_t NimbleSerializeNonce;
+typedef uint8_t NimbleSerializeClientRequestId;
 typedef uint8_t NimbleSerializeConnectionId;
 typedef uint64_t NimbleSerializeConnectionIdSecret;
 
@@ -36,15 +38,14 @@ typedef struct {
 
 typedef struct NimbleSerializeConnectRequest {
     NimbleSerializeVersion applicationVersion;
-    NimbleSerializeNonce nonce;
+    NimbleSerializeClientRequestId clientRequestId;
     bool useDebugStreams;
 } NimbleSerializeConnectRequest;
 
 typedef struct NimbleSerializeConnectResponse {
     bool useDebugStreams;
-    NimbleSerializeNonce responseToNonce;
+    NimbleSerializeClientRequestId responseToRequestId;
     NimbleSerializeConnectionId connectionId;
-    NimbleSerializeConnectionIdSecret connectionIdSecret; // TODO: Exchange it in a secure way
 } NimbleSerializeConnectResponse;
 
 typedef enum NimbleSerializeJoinGameType {
