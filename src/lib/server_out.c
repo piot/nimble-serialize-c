@@ -70,8 +70,7 @@ int nimbleSerializeServerOutConnectResponse(FldOutStream* outStream, const Nimbl
 
     fldOutStreamWriteUInt8(outStream, response->useDebugStreams ? 0x01 : 0x00);
 
-    nimbleSerializeOutNonce(outStream, response->responseToRequestId);
-    return nimbleSerializeOutConnectionId(outStream, response->connectionId);
+    return nimbleSerializeOutClientRequestId(outStream, response->responseToRequestId);
 }
 
 /// Serializes an out of participant slot response
