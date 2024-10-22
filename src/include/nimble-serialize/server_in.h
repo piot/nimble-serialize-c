@@ -15,5 +15,6 @@ struct FldInStream;
 
 int nimbleSerializeServerInConnectRequest(struct FldInStream* stream, NimbleSerializeConnectRequest* request);
 int nimbleSerializeServerInJoinGameRequest(struct FldInStream* stream, NimbleSerializeJoinGameRequest* request);
+int nimbleSerializeServerInPingRequest(struct FldInStream* stream, NimbleSerializePingRequest* request);
 
 #endif

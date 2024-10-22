@@ -73,6 +73,16 @@ int nimbleSerializeServerOutConnectResponse(FldOutStream* outStream, const Nimbl
     return nimbleSerializeOutClientRequestId(outStream, response->responseToRequestId);
 }
 
+
+int nimbleSerializeServerOutPongResponse(FldOutStream* outStream, const NimbleSerializePongResponse* response,
+                                            Clog* log)
+{
+    nimbleSerializeWriteCommand(outStream, NimbleSerializeCmdPongResponse, log);
+
+    return fldOutStreamWriteUInt16(outStream, response->clientTime);
+}
+
+
 /// Serializes an out of participant slot response
 /// @param outStream outstream
 /// @param reqGameNonce request join game nonce

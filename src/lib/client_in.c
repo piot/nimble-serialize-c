@@ -20,6 +20,12 @@ int nimbleSerializeClientInConnectResponse(FldInStream* stream, NimbleSerializeC
     return nimbleSerializeInConnectionId(stream, &options->connectionId);
 }
 
+int nimbleSerializeClientInPongResponse(FldInStream* stream, NimbleSerializePongResponse* options)
+{
+    return fldInStreamReadUInt16(stream, &options->clientTime);
+}
+
+
 int nimbleSerializeClientInJoinGameResponse(FldInStream* inStream, NimbleSerializeJoinGameResponse* response)
 {
     uint8_t participantCount;

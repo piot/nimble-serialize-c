@@ -26,6 +26,9 @@ int nimbleSerializeServerOutStepHeader(struct FldOutStream* outStream, uint32_t 
 int nimbleSerializeServerOutConnectResponse(struct FldOutStream* outStream,
                                             const NimbleSerializeConnectResponse* response, struct Clog* log);
 
+int nimbleSerializeServerOutPongResponse(struct FldOutStream* outStream,
+                                            const NimbleSerializePongResponse* response, struct Clog* log);
+
 int nimbleSerializeServerOutJoinGameResponse(struct FldOutStream* outStream,
                                              const NimbleSerializeJoinGameResponse* response, struct Clog* log);
 

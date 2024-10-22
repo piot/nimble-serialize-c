@@ -16,6 +16,7 @@
 #define NimbleSerializeCmdDownloadGameStateRequest (0x03)
 #define NimbleSerializeCmdClientOutBlobStream (0x04)
 #define NimbleSerializeCmdConnectRequest (0x05)
+#define NimbleSerializeCmdPingRequest (0x06)
 
 // Responses from Server to client
 #define NimbleSerializeCmdGameStepResponse (0x08)
@@ -24,5 +25,6 @@
 #define NimbleSerializeCmdGameStateResponse (0x0b)
 #define NimbleSerializeCmdJoinGameOutOfParticipantSlotsResponse (0x0e)
 #define NimbleSerializeCmdConnectResponse (0x0d)
+#define NimbleSerializeCmdPongResponse (0x0e)
 
 #endif

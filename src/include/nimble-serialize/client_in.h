@@ -16,5 +16,6 @@ struct FldInStream;
 
 int nimbleSerializeClientInConnectResponse(FldInStream* stream, NimbleSerializeConnectResponse* response);
 int nimbleSerializeClientInJoinGameResponse(FldInStream* stream, NimbleSerializeJoinGameResponse* response);
+int nimbleSerializeClientInPongResponse(FldInStream* stream, NimbleSerializePongResponse* options);
 
 #endif

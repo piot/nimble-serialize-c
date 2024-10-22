@@ -36,6 +36,17 @@ typedef struct {
     size_t participantCount;
 } NimbleSerializeLocalPartyInfo;
 
+
+
+typedef struct NimbleSerializePingRequest {
+    uint16_t clientTime;
+} NimbleSerializePingRequest;
+
+typedef struct NimbleSerializePongResponse {
+    uint16_t clientTime;
+} NimbleSerializePongResponse;
+
+
 typedef struct NimbleSerializeConnectRequest {
     NimbleSerializeVersion applicationVersion;
     NimbleSerializeClientRequestId clientRequestId;

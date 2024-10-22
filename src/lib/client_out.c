@@ -49,6 +49,17 @@ int nimbleSerializeClientOutConnectRequest(FldOutStream* stream, const NimbleSer
     return nimbleSerializeOutClientRequestId(stream, request->clientRequestId);
 }
 
+/// Write a ping request to the octet stream
+/// @param stream out stream
+/// @param request ping options
+/// @return negative on error
+int nimbleSerializeClientOutPingRequest(FldOutStream* stream, const NimbleSerializePingRequest* request,
+                                           Clog* log)
+{
+    nimbleSerializeWriteCommand(stream, NimbleSerializeCmdPingRequest, log);
+    return fldOutStreamWriteUInt16(stream, request->clientTime);
+}
+
 /// Writes a JoinGameRequest to the octet stream
 /// @param stream out stream
 /// @param request game join request

@@ -41,6 +41,15 @@ int nimbleSerializeServerInConnectRequest(FldInStream* stream, NimbleSerializeCo
     return nimbleSerializeInClientRequestId(stream, &request->clientRequestId);
 }
 
+/// Ping request sent from the client to the server
+/// @param stream stream to read from
+/// @param request the request
+/// @return negative on error
+int nimbleSerializeServerInPingRequest(FldInStream* stream, NimbleSerializePingRequest* request)
+{
+    return fldInStreamReadUInt16(stream, &request->clientTime);
+}
+
 static int nimbleSerializeServerInJoinGameRequestPlayers(FldInStream* stream,
                                                          struct NimbleSerializeJoinGameRequestPlayer* players,
                                                          size_t* outPlayerCount)
